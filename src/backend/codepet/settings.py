@@ -12,7 +12,7 @@ SECRET_KEY = getenv("SECRET_KEY")
 
 DEBUG = getenv("DEBUG", default="False") == "True"
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = list(getenv("ALLOWED_HOSTS", default=[]).split(","))
 
 
 INSTALLED_APPS = [
