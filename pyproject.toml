@@ -35,7 +35,6 @@ src_paths = ["src/backend"]
 [tool.black]
 line-length = 79
 target-version = ['py312']
-skip-string-normalization = true
 extend-exclude = """
 /(
   | migrations

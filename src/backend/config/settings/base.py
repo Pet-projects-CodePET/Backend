@@ -5,25 +5,30 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 
 SECRET_KEY = getenv("SECRET_KEY")
 
-DEBUG = getenv("DEBUG", default="False") == "True"
-
 ALLOWED_HOSTS = list(getenv("ALLOWED_HOSTS", default=[]).split(","))
 
 
-INSTALLED_APPS = [
+DJANGO_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+]
+
+THIRD_PARTY_APPS = [
     "rest_framework",
 ]
+
+LOCAL_APPS = []
+
+INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -35,7 +40,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "codepet.urls"
+ROOT_URLCONF = "config.urls"
 
 TEMPLATES = [
     {
@@ -53,28 +58,19 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "codepet.wsgi.application"
+WSGI_APPLICATION = "config.wsgi.application"
 
-if getenv("USE_SQLITE", default="True") == "True":
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
-        }
+
+DATABASES = {
+    "default": {
+        "ENGINE": getenv("DB_ENGINE", default="django.db.backends.postgresql"),
+        "NAME": getenv("DB_NAME", default="test"),
+        "USER": getenv("POSTGRES_USER", default="test_user"),
+        "PASSWORD": getenv("POSTGRES_PASSWORD", default="test_password"),
+        "HOST": getenv("DB_HOST", default="db"),
+        "PORT": getenv("DB_PORT", default=5432),
     }
-else:
-    DATABASES = {
-        "default": {
-            "ENGINE": getenv(
-                "DB_ENGINE", default="django.db.backends.postgresql"
-            ),
-            "NAME": getenv("DB_NAME", default="test"),
-            "USER": getenv("POSTGRES_USER", default="test_user"),
-            "PASSWORD": getenv("POSTGRES_PASSWORD", default="test_password"),
-            "HOST": getenv("DB_HOST", default="db"),
-            "PORT": getenv("DB_PORT", default=5432),
-        }
-    }
+}
 
 AUTH_PASSWORD_VALIDATORS = [
     {

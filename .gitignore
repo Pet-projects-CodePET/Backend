@@ -136,3 +136,6 @@ cython_debug/
 
 # VSCode files
 .vscode
+
+# Project
+**/data/logs/*
