@@ -7,7 +7,7 @@ on:
   pull_request:
     branches: [ "develop" ]
 
-  
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -27,12 +27,12 @@ jobs:
 
     - name: Configure poetry
       run: poetry config virtualenvs.in-project true
-        
-    - name: Install dependencies  
+
+    - name: Install dependencies
       run: poetry install
       if: steps.cache-poetry.outputs.cache-hit != 'true'
 
-    - name: Run flake8
+    - name: Run black
       run: |
-        poetry add flake8 --dev
-        poetry run flake8 .
+        poetry add black --dev
+        poetry run black --check .
