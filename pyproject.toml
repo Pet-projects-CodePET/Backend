@@ -1,14 +1,42 @@
 [tool.poetry]
-name = "my-project"
+name = "codepet-backend"
 version = "0.1.0"
-description = ""
-authors = ["CodePET"]
+description = "RESTfull API приложение, разработанное для поиска, организации и управления пет-проектами в области разработки программного обеспечения. Оно предназначено для выпускников школ программирования, которые хотят получить практический опыт и совершенствовать свои навыки путем участия в реальных проектах. А также оно будет интересно для опытных разработчиков которые хотят реализовать что-то новое, для менеджеров проектов и для компаний которые хотят создать тестовое МВП нового продукта."
+authors = [
+    "Козин Артем <kaf-artem@yandex.ru>",
+]
+license = "MIT"
+readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = "^3.12.1"
+django = "5.0.1"
+djangorestframework = "3.14.0"
+psycopg2-binary = "^2.9.9"
+gunicorn = "^21.2.0"
+python-dotenv = "^1.0.0"
+pillow = "^10.1.0"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^3.5.0"
+black = "^23.12.1"
+isort = "^5.12.2"
 
 [build-system]
-requires = ["poetry>=0.12"]
-build-backend = "poetry.masonry.api"
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.isort]
+profile = "black"
+line_length = 79
+skip_glob = ["**/migrations/*.py"]
+src_paths = ["src/backend"]
+
+[tool.black]
+line-length = 79
+target-version = ['py312']
+extend-exclude = """
+/(
+  | migrations
+)/
+"""
