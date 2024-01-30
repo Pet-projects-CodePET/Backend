@@ -1,0 +1,3 @@
+[flake8]
+exclude = .git,__pycache__,venv,.venv,.tox,dist,build,*.egg,docs,data
+max-complexity = 10
