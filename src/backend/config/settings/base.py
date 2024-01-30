@@ -10,7 +10,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 SECRET_KEY = getenv("SECRET_KEY")
 
-ALLOWED_HOSTS = list(getenv("ALLOWED_HOSTS", default=[]).split(","))
+ALLOWED_HOSTS = list(
+    str(getenv("ALLOWED_HOSTS", default=["localhost,127.0.0.1"])).split(",")
+)
 
 
 DJANGO_APPS = [
@@ -26,7 +28,7 @@ THIRD_PARTY_APPS = [
     "rest_framework",
 ]
 
-LOCAL_APPS = []
+LOCAL_APPS: list = []
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
