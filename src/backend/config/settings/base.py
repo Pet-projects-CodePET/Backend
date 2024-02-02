@@ -10,6 +10,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 SECRET_KEY = getenv("SECRET_KEY")
 
+
 ALLOWED_HOSTS = list(
     str(getenv("ALLOWED_HOSTS", default=["localhost,127.0.0.1"])).split(",")
 )
@@ -22,6 +23,7 @@ DJANGO_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "general",
 ]
 
 THIRD_PARTY_APPS = [
