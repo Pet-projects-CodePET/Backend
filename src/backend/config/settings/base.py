@@ -29,8 +29,8 @@ THIRD_PARTY_APPS = [
     "rest_framework",
 ]
 
-LOCAL_APPS = [
-    "apps.general",
+LOCAL_APPS: list = [
+    "project",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
