@@ -30,6 +30,7 @@ THIRD_PARTY_APPS = [
 ]
 
 LOCAL_APPS: list = [
+    "apps.general",
     "project",
 ]
 

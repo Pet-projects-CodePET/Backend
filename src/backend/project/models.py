@@ -3,18 +3,16 @@ from django.db import models
 
 from apps.general.models import CreatedModifiedFields
 
-from .constants import (
-    BUSYNESS_CHOICES,
-    BUSYNESS_LENGTH,
-    DAYS_IN_MONTH,
-    DESCRIPTION_LENGTH,
-    NAME_LENGTH,
-)
+from .constants import DESCRIPTION_LENGTH, NAME_LENGTH, STATUS_CHOICES
 
 User = get_user_model()
 
 
 class Specialization(models.Model):
+    """
+    Модель представляющая специализацию, подразделяется на специальности.
+    """
+
     name = models.CharField("Название", max_length=NAME_LENGTH)
     quantity = models.PositiveSmallIntegerField()
 
@@ -27,6 +25,10 @@ class Specialization(models.Model):
 
 
 class Specialist(models.Model):
+    """
+    Модель представляющая специальность(специалиста), входящую в специализацию.
+    """
+
     specialization = models.ForeignKey(
         Specialization,
         on_delete=models.CASCADE,
@@ -44,6 +46,10 @@ class Specialist(models.Model):
 
 
 class Level(models.Model):
+    """
+    Модель представляющая уровень участников.
+    """
+
     name = models.CharField("Название", max_length=NAME_LENGTH)
 
     class Meta:
@@ -55,6 +61,10 @@ class Level(models.Model):
 
 
 class Status(models.Model):
+    """
+    Модель представляющая статус проекта.
+    """
+
     name = models.CharField("Название", max_length=NAME_LENGTH)
 
     class Meta:
@@ -66,6 +76,10 @@ class Status(models.Model):
 
 
 class Skill(models.Model):
+    """
+    Модель представляющая необходимые для проекта навыки.
+    """
+
     name = models.CharField("Название", max_length=NAME_LENGTH)
 
     class Meta:
@@ -77,6 +91,10 @@ class Skill(models.Model):
 
 
 class Project(CreatedModifiedFields):
+    """
+    Модель представляющая проект.
+    """
+
     name = models.CharField("Название проекта", max_length=NAME_LENGTH)
     description = models.TextField(
         "Описание проекта", max_length=DESCRIPTION_LENGTH
@@ -105,23 +123,28 @@ class Project(CreatedModifiedFields):
         related_name="projects",
         verbose_name="Навыки",
     )
-    busyness = models.CharField(
-        max_length=BUSYNESS_LENGTH,
-        choices=BUSYNESS_CHOICES,
-        verbose_name="Занятость",
+    busyness = models.IntegerField(
+        verbose_name="Занятость в часах в неделю",
+    )
+    recruitment_status = models.IntegerField(
+        choices=STATUS_CHOICES,
+        verbose_name="Статус набора участников",
+        default=1,
     )
     status = models.ForeignKey(
         Status,
         on_delete=models.CASCADE,
-        verbose_name="Статус",
+        verbose_name="Статус проекта",
     )
 
     @property
     def duration(self):
+        """
+        Вычисляет и возвращает продолжительность проекта в днях.
+        """
         if self.ended is not None and self.started is not None:
             duration = self.ended - self.started
-            months = duration.days // DAYS_IN_MONTH
-            return months
+            return duration.days
         return None
 
     duration.fget.short_description = "Продолжительность"

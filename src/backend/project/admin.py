@@ -1,5 +1,6 @@
 from django.contrib import admin
 
+from .constants import LIST_PER_PAGE
 from .models import Level, Project, Skill, Specialist, Specialization, Status
 
 
@@ -44,14 +45,15 @@ class ProjectAdmin(admin.ModelAdmin):
         "duration",
         "level",
         "busyness",
+        "recruitment_status",
         "status",
     )
     list_filter = ("level", "busyness", "status")
     search_fields = ("name", "description", "purpose", "creator__username")
     readonly_fields = ("duration",)
-    list_per_page = 10
+    list_per_page = LIST_PER_PAGE
 
     def duration(self, instance):
         return instance.duration
 
-    duration.short_description = "Продолжительность в месяцах"
+    duration.short_description = "Продолжительность в днях"
