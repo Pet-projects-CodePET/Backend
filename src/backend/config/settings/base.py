@@ -27,10 +27,14 @@ DJANGO_APPS = [
 
 THIRD_PARTY_APPS = [
     "rest_framework",
+    "rest_framework.authtoken",
+    "djoser",
+    "django_filters",
 ]
 
 LOCAL_APPS = [
     "apps.general",
+    "apps.users",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -46,11 +50,13 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "config.urls"
-
+print(BASE_DIR)
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [
+            Path(BASE_DIR, "templates"),
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -110,3 +116,42 @@ MEDIA_ROOT = Path(BASE_DIR, "media")
 
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+AUTH_USER_MODEL = "users.User"
+
+REST_FRAMEWORK = {
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.AllowAny",
+        # "rest_framework.permissions.IsAuthenticatedOrReadOnly",
+    ],
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication",
+    ],
+    "DEFAULT_FILTER_BACKENDS": [
+        "django_filters.rest_framework.DjangoFilterBackend",
+    ],
+}
+
+DJOSER = {
+    "LOGIN_FIELD": "email",
+    "HIDE_USERS": False,
+    "PERMISSIONS": {
+        "user_list": ["rest_framework.permissions.IsAuthenticated"],
+    },
+    "USER_CREATE_PASSWORD_RETYPE": True,
+    "AUTO_ACTIVATE_NEW_USERS": True,
+    "SERIALIZERS": {
+        "current_user": "api.v1.users.serializers.CustomUserSerializer",
+        "user": "api.v1.users.serializers.CustomUserSerializer",
+        "user_create_password_retype": "api.v1.users.serializers.CustomUserCreateSerializer",
+    },
+    "SEND_ACTIVATION_EMAIL": False,
+    "SEND_CONFIRMATION_EMAIL": True,
+    "ACTIVATION_URL": "#/login/{token}",
+    "PASSWORD_RESET_CONFIRM_URL": "#/login/{token}",
+    "PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND": True,
+    "EMAIL": {
+        "confirmation": "api.v1.users.emails.TokenEmail",
+    },
+}
