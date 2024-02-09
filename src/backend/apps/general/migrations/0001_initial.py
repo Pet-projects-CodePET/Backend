@@ -10,6 +10,8 @@ class Migration(migrations.Migration):
         migrations.swappable_dependency(),
     ]
 
+
+
     operations = [
         migrations.CreateModel(
             name="Section",
