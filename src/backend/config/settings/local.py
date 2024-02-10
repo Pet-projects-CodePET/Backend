@@ -22,3 +22,8 @@ else:
             "PORT": getenv("DB_PORT", default=5432),
         }
     }
+
+
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+EMAIL_PORT = 587
