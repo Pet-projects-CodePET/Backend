@@ -18,7 +18,7 @@ class CustomUserViewSet(UserViewSet):
         """Процесс активации отключен."""
 
     @action(["post"], detail=False)
-    def resend_activation(self, request, *args, **kwargs):
+    def resend_activation(self, request, *args, **kwargs) -> Response:
         """Повторная отправка сообщения со ссылкой с токеном аутентификации."""
 
         serializer = self.get_serializer(data=request.data)

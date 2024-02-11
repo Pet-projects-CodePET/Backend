@@ -17,7 +17,7 @@ class CustomUserManager(UserManager):
     """Менеджер объектов пользователей."""
 
     @classmethod
-    def normalize_email(cls, email):
+    def normalize_email(cls, email) -> str:
         """Нормализация email. Приведение символов к нижнему регистру."""
 
         try:
