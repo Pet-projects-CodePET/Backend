@@ -112,6 +112,7 @@ MEDIA_ROOT = Path(BASE_DIR, "media")
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
-EMAIL_HOST = "smtp.gmail.com"
-EMAIL_HOST_USER = getenv("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = getenv("EMAIL_HOST_PASSWORD")
+EMAIL_HOST = getenv("EMAIL_HOST", default='localhost')
+EMAIL_HOST_USER = getenv("EMAIL_HOST_USER", default="")
+EMAIL_HOST_PASSWORD = getenv("EMAIL_HOST_PASSWORD", default="")
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
