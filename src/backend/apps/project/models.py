@@ -149,11 +149,9 @@ class Project(CreatedModifiedFields):
     direction = models.IntegerField(
         choices=DIRECTION_CHOICES,
         verbose_name="Направление разработки",
-        # default=1,
     )
     participants = models.ManyToManyField(
         User,
-        # through="Participant",
         related_name="project_participants",
         verbose_name="Команда проекта",
     )
