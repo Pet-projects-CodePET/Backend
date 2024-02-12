@@ -3,7 +3,14 @@ from django.db import models
 
 from apps.general.models import CreatedModifiedFields
 
-from .constants import DESCRIPTION_LENGTH, NAME_LENGTH, STATUS_CHOICES
+from .constants import (
+    BUSYNESS_CHOICES,
+    CONTACTS_LENGTH,
+    DESCRIPTION_LENGTH,
+    DIRECTION_CHOICES,
+    NAME_LENGTH,
+    STATUS_CHOICES,
+)
 
 User = get_user_model()
 
@@ -14,11 +21,10 @@ class Specialization(models.Model):
     """
 
     name = models.CharField("Название", max_length=NAME_LENGTH)
-    quantity = models.PositiveSmallIntegerField()
 
     class Meta:
-        verbose_name = "Специальность"
-        verbose_name_plural = "Специальности"
+        verbose_name = "Специализация"
+        verbose_name_plural = "Специализации"
 
     def __str__(self) -> str:
         return self.name
@@ -124,6 +130,7 @@ class Project(CreatedModifiedFields):
         verbose_name="Навыки",
     )
     busyness = models.IntegerField(
+        choices=BUSYNESS_CHOICES,
         verbose_name="Занятость в часах в неделю",
     )
     recruitment_status = models.IntegerField(
@@ -136,18 +143,20 @@ class Project(CreatedModifiedFields):
         on_delete=models.CASCADE,
         verbose_name="Статус проекта",
     )
-
-    @property
-    def duration(self):
-        """
-        Вычисляет и возвращает продолжительность проекта в днях.
-        """
-        if self.ended is not None and self.started is not None:
-            duration = self.ended - self.started
-            return duration.days
-        return None
-
-    duration.fget.short_description = "Продолжительность"
+    contacts = models.TextField(
+        "Контакты для связи", max_length=CONTACTS_LENGTH
+    )
+    direction = models.IntegerField(
+        choices=DIRECTION_CHOICES,
+        verbose_name="Направление разработки",
+        # default=1,
+    )
+    participants = models.ManyToManyField(
+        User,
+        # through="Participant",
+        related_name="project_participants",
+        verbose_name="Команда проекта",
+    )
 
     class Meta:
         verbose_name = "Проект"

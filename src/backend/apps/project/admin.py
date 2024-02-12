@@ -42,18 +42,13 @@ class ProjectAdmin(admin.ModelAdmin):
         "creator",
         "started",
         "ended",
-        "duration",
+        "contacts",
         "level",
         "busyness",
         "recruitment_status",
         "status",
+        "direction",
     )
     list_filter = ("level", "busyness", "status")
     search_fields = ("name", "description", "purpose", "creator__username")
-    readonly_fields = ("duration",)
     list_per_page = LIST_PER_PAGE
-
-    def duration(self, instance):
-        return instance.duration
-
-    duration.short_description = "Продолжительность в днях"
