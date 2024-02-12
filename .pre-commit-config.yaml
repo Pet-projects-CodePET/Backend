@@ -13,18 +13,18 @@ repos:
       - id: check-merge-conflict
 
   - repo: https://github.com/psf/black-pre-commit-mirror
-    rev: 23.12.1
+    rev: 24.1.1
     hooks:
       - id: black
         language_version: python3.12.1
         exclude: migrations
 
   - repo: https://github.com/PyCQA/isort
-    rev: 5.12.0
+    rev: 5.13.2
     hooks:
       - id: isort
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: ""
+    rev: "v1.8.0"
     hooks:
       - id: mypy

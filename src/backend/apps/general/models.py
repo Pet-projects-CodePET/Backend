@@ -1,5 +1,7 @@
 from django.db import models
 
+from .constants import DESCRIPRION_LENGTH, TITLE_LENGTH
+
 
 class CreatedModifiedFields(models.Model):
     """Базовая модель."""
@@ -15,10 +17,10 @@ class Section(models.Model):
     """Секции на главной странице"""
 
     title = models.TextField(
-        verbose_name="Заголовок", max_length=55, null=False
+        verbose_name="Заголовок", max_length=TITLE_LENGTH, null=False
     )
     description = models.TextField(
-        verbose_name="Текст", max_length=160, null=False
+        verbose_name="Текст", max_length=DESCRIPRION_LENGTH, null=False
     )
 
     def __str__(self):
