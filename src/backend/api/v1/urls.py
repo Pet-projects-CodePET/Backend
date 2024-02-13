@@ -1,5 +1,6 @@
-from typing import List
-
 from django.urls import include, path
 
-urlpatterns: List[str] = []
+
+urlpatterns = [
+    path("", include("api.v1.projects.urls")),
+]

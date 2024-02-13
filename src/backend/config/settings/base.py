@@ -32,6 +32,7 @@ THIRD_PARTY_APPS = [
 LOCAL_APPS: list = [
     "apps.general",
     "apps.project",
+    "api",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -111,3 +112,9 @@ MEDIA_ROOT = Path(BASE_DIR, "media")
 
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+REST_FRAMEWORK = {
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.AllowAny",
+    ],
+}
