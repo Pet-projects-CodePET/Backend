@@ -2,13 +2,12 @@
 
 {% block subject %}
 {% blocktrans %}{{ site_name }} - Your account has been successfully created and activated!{% endblocktrans %}
-{% endblock %}
+{% endblock subject%}
 
 {% block text_body %}
 {% trans "Your account has been created and is ready to use!" %}
 
-{% trans "Please go to the following page to start:" %}
-{{ protocol }}://{{ domain }}/{{ url|safe }}
+Для начала использования сайта перейдите по ссылке: {{ protocol }}://{{ domain }}/{{ url|safe }}
 
 {% trans "Thanks for using our site!" %}
 
@@ -18,7 +17,7 @@
 {% block html_body %}
 <p>{% trans "Your account has been created and is ready to use!" %}</p>
 
-<p>{% trans "Please go to the following page to start:" %}</p>
+<p>Для начала использования сайта перейдите по ссылке:</p>
 <p><a href="{{ protocol }}://{{ domain }}/{{ url|safe }}">{{ protocol }}://{{ domain }}/{{ url|safe }}</a></p>
 
 <p>{% trans "Thanks for using our site!" %}</p>

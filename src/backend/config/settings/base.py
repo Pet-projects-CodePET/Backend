@@ -148,9 +148,9 @@ DJOSER = {
     "SEND_ACTIVATION_EMAIL": False,
     "SEND_CONFIRMATION_EMAIL": True,
     "ACTIVATION_URL": "#/login/{token}",
-    "PASSWORD_RESET_CONFIRM_URL": "#/login/{token}",
     "PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND": True,
     "EMAIL": {
-        "confirmation": "api.v1.users.emails.TokenEmail",
+        "confirmation": "api.v1.users.emails.RegistrationConfirmEmail",
+        "password_reset": "api.v1.users.emails.PasswordResetEmail",
     },
 }
