@@ -32,9 +32,10 @@ THIRD_PARTY_APPS = [
     "django_filters",
 ]
 
-LOCAL_APPS = [
+LOCAL_APPS: list = [
     "apps.general",
     "apps.users",
+    "apps.project",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -154,3 +155,8 @@ DJOSER = {
         "password_reset": "api.v1.users.emails.PasswordResetEmail",
     },
 }
+
+EMAIL_HOST = getenv("EMAIL_HOST", default="localhost")
+EMAIL_HOST_USER = getenv("EMAIL_HOST_USER", default="")
+EMAIL_HOST_PASSWORD = getenv("EMAIL_HOST_PASSWORD", default="")
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
