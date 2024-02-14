@@ -1,4 +1,3 @@
-
 TITLE_LENGTH = 100
 DESCRIPRION_LENGTH = 250
 MAX_LENGTH_EMAIL = 256
@@ -8,4 +7,3 @@ EMAIL_HELP_TEXT = (
     "@/./+/-/_"
 )
 EMAIL_ERROR_TEXT = "Не корректный email."
-
