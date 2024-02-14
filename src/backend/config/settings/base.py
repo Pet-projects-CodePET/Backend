@@ -173,4 +173,9 @@ SPECTACULAR_SETTINGS = {
     "реализовать что-то новое, для менеджеров проектов и для компаний которые хотят создать тестовое "
     "МВП нового продукта.",
     "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "SWAGGER_UI_SETTINGS": {
+        "filter": True,
+    },
+    "COMPONENT_SPLIT_REQUEST": True,
 }
