@@ -4,7 +4,9 @@ from .constants import DESCRIPRION_LENGTH, TITLE_LENGTH
 
 
 class CreatedModifiedFields(models.Model):
-    """Базовая модель."""
+    """
+    Абстрактная модель. Поля времени создания и последней модификации объекта.
+    """
 
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
