@@ -30,6 +30,7 @@ THIRD_PARTY_APPS = [
     "rest_framework.authtoken",
     "djoser",
     "django_filters",
+    "drf_spectacular",
 ]
 
 LOCAL_APPS: list = [
@@ -131,6 +132,7 @@ REST_FRAMEWORK = {
     "DEFAULT_FILTER_BACKENDS": [
         "django_filters.rest_framework.DjangoFilterBackend",
     ],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
 DJOSER = {
@@ -160,3 +162,20 @@ EMAIL_HOST = getenv("EMAIL_HOST", default="localhost")
 EMAIL_HOST_USER = getenv("EMAIL_HOST_USER", default="")
 EMAIL_HOST_PASSWORD = getenv("EMAIL_HOST_PASSWORD", default="")
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "CodePET",
+    "DESCRIPTION": "CodePET - это веб-приложение, разработанное для поиска, организации и управления пет-проектами в "
+    "области разработки программного обеспечения. Оно предназначено для выпускников школ "
+    "программирования, которые хотят получить практический опыт и совершенствовать свои навыки путем "
+    "участия в реальных проектах. А также оно будет интересно для опытных разработчиков которые хотят "
+    "реализовать что-то новое, для менеджеров проектов и для компаний которые хотят создать тестовое "
+    "МВП нового продукта.",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "SWAGGER_UI_SETTINGS": {
+        "filter": True,
+    },
+    "COMPONENT_SPLIT_REQUEST": True,
+}
