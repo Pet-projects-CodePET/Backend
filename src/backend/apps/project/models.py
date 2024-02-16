@@ -20,7 +20,7 @@ class Specialization(models.Model):
     Модель представляющая специализацию, подразделяется на специальности.
     """
 
-    name = models.CharField("Название", max_length=NAME_LENGTH)
+    name = models.CharField("Название специализации", max_length=NAME_LENGTH)
 
     class Meta:
         verbose_name = "Специализация"
@@ -30,9 +30,39 @@ class Specialization(models.Model):
         return self.name
 
 
+class Level(models.Model):
+    """
+    Модель представляющая уровень участников.
+    """
+
+    name = models.CharField("Название", max_length=NAME_LENGTH)
+
+    class Meta:
+        verbose_name = "Уровень"
+        verbose_name_plural = "Уровни"
+
+    def __str__(self) -> str:
+        return self.name
+
+
+class Skill(models.Model):
+    """
+    Модель представляющая необходимые для проекта навыки.
+    """
+
+    name = models.CharField("Название", max_length=NAME_LENGTH)
+
+    class Meta:
+        verbose_name = "Навык"
+        verbose_name_plural = "Навыки"
+
+    def __str__(self) -> str:
+        return self.name
+
+
 class Specialist(models.Model):
     """
-    Модель представляющая специальность(специалиста), входящую в специализацию.
+    Модель представляющая специальность, входящую в специализацию.
     """
 
     specialization = models.ForeignKey(
@@ -41,11 +71,11 @@ class Specialist(models.Model):
         related_name="specialists",
         verbose_name="Специализация",
     )
-    name = models.CharField("Название", max_length=NAME_LENGTH)
+    name = models.CharField("Название cпециальности", max_length=NAME_LENGTH)
 
     class Meta:
-        verbose_name = "Специалист"
-        verbose_name_plural = "Специалисты"
+        verbose_name = "Специальность"
+        verbose_name_plural = "Специальности"
 
     def __str__(self) -> str:
         return self.name
@@ -117,16 +147,11 @@ class Project(CreatedModifiedFields):
     specialists = models.ManyToManyField(
         Specialist,
         related_name="projects",
-        verbose_name="Специалисты",
-    )
-    level = models.ForeignKey(
-        Level,
-        on_delete=models.CASCADE,
-        verbose_name="Уровень",
+        verbose_name="Специальности",
     )
     skills = models.ManyToManyField(
         Skill,
-        related_name="projects",
+        related_name="project_skills",
         verbose_name="Навыки",
     )
     busyness = models.IntegerField(
@@ -163,3 +188,31 @@ class Project(CreatedModifiedFields):
 
     def __str__(self) -> str:
         return self.name
+
+
+class ProjectSpecialist(models.Model):
+    """
+    Модель представляющая специалиста проекта.
+    """
+
+    project = models.ForeignKey(
+        Project, on_delete=models.CASCADE, related_name="project_specialists"
+    )
+    specialists = models.ForeignKey(
+        Specialist,
+        on_delete=models.CASCADE,
+        related_name="project_specialists",
+    )
+    specialists_count = models.IntegerField(
+        "Количество требуемых специалистов"
+    )
+    level = models.ForeignKey(
+        Level,
+        on_delete=models.CASCADE,
+        verbose_name="Уровень специалиста",
+    )
+    is_required = models.BooleanField("Требуется для проекта", default=False)
+
+    class Meta:
+        verbose_name = "Специалист проекта"
+        verbose_name_plural = "Специалисты проекта"

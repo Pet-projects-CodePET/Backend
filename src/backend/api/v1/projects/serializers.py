@@ -1,6 +1,13 @@
 from rest_framework import serializers
 
-from apps.project.models import Project, Skill, Specialist, Status
+from apps.project.models import (
+    Project,
+    ProjectSpecialist,
+    Skill,
+    Specialist,
+    Specialization,
+    Status,
+)
 
 
 class SpecialistSerializer(serializers.ModelSerializer):
@@ -8,6 +15,14 @@ class SpecialistSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Specialist
+        fields = ("id", "name", "specialization")
+
+
+class SpecializationSerializer(serializers.ModelSerializer):
+    """Сериализатор получения специализации."""
+
+    class Meta:
+        model = Specialization
         fields = ("id", "name")
 
 
@@ -17,6 +32,14 @@ class SkillSerializer(serializers.ModelSerializer):
     class Meta:
         model = Skill
         fields = ("id", "name")
+
+
+class CustomSpecializationSerializer(SpecialistSerializer):
+    specialization = SpecializationSerializer()
+
+    class Meta:
+        model = ProjectSpecialist
+        fields = ("id", "specialization")
 
 
 class StatusSerializer(serializers.ModelSerializer):
@@ -30,14 +53,14 @@ class StatusSerializer(serializers.ModelSerializer):
 class ProjectSerializer(serializers.ModelSerializer):
     """Сериализатор получения проектов."""
 
-    specialists = SpecialistSerializer(many=True)
+    specialists = CustomSpecializationSerializer(many=True)
 
     status = StatusSerializer()
     skills = SkillSerializer(many=True)
 
     direction = serializers.SerializerMethodField()
 
-    def get_direction(self, obj):
+    def get_direction(self, obj) -> str:
         return obj.get_direction_display()
 
     class Meta:
@@ -50,6 +73,27 @@ class ProjectSerializer(serializers.ModelSerializer):
             "ended",
             "specialists",
             "skills",
+            "direction",
             "status",
+        )
+
+
+class PreviewProjectSerializer(serializers.ModelSerializer):
+    """Сериализатор получения превью проектов."""
+
+    specialists = SpecialistSerializer(many=True)
+    direction = serializers.SerializerMethodField()
+
+    def get_direction(self, obj) -> str:
+        return obj.get_direction_display()
+
+    class Meta:
+        model = Project
+        fields = (
+            "id",
+            "name",
+            "started",
+            "ended",
+            "specialists",
             "direction",
         )
