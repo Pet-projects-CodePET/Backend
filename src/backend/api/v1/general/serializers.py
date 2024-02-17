@@ -1,6 +1,5 @@
 from rest_framework import serializers
-
-from .models import Section
+from src.backend.apps.general.models import Section
 
 
 class SectionSerializer(serializers.ModelSerializer):
