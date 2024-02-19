@@ -1,3 +1,4 @@
+import re
 from os import getenv
 from pathlib import Path
 
@@ -87,10 +88,25 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
     },
     {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "NAME": "apps.users.validators.PasswordMaximumLengthValidator",
+        "OPTIONS": {
+            "message": "Пароль слишком длинный.",
+        },
+    },
+    {
+        "NAME": "apps.users.validators.PasswordRegexValidator",
+        "OPTIONS": {
+            "message": "В пароле недопустимые символы.",
+            "help_message": "В пароле допускаются цифры, буквы и спецсимовлы -!#$%%&'*+/=?^_;():@,.<>`{}~«»",
+            "regex": r"(^[%!#$&*'+/=?^_;():@,.<>`{|}~-«»0-9A-ZА-ЯЁ]+)\Z",
+            "flags": re.IGNORECASE,
+        },
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
     {
         "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
