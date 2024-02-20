@@ -1,19 +1,26 @@
 from django.db import connection
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
-from rest_framework import generics
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import generics, viewsets
 from rest_framework.response import Response
-from src.backend.api.v1.general.serializers import SectionSerializer
-from src.backend.apps.general.models import Section
+
+from apps.general.models import Section
+
+from .serializers import SectionSerializer
 
 
-class SectionAPIList(generics.RetrieveAPIView, generics.ListAPIView):
+class SectionViewSet(viewsets.ModelViewSet):
+    """Текстовая секция на странице"""
+
     queryset = Section.objects.all()
     serializer_class = SectionSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["page_id"]
 
 
 class CounterApiView(generics.RetrieveAPIView):
-    """Создала счетчик проектов и пользователей"""
+    """Счетчик проектов и пользователей"""
 
     @method_decorator(cache_page(600))
     def get(self, request):
