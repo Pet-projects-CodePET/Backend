@@ -1,184 +1,103 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 
-from apps.general.models import CreatedModifiedFields
+from apps.general.constants import LEVEL_CHOICES
+from apps.general.models import CreatedModifiedFields, Skill, Specialization
 
 from .constants import (
     BUSYNESS_CHOICES,
-    CONTACTS_LENGTH,
-    DESCRIPTION_LENGTH,
     DIRECTION_CHOICES,
-    NAME_LENGTH,
+    MAX_LENGTH_CONTACTS,
+    MAX_LENGTH_DESCRIPTION,
+    MAX_LENGTH_PROFESSION_NAME,
+    MAX_LENGTH_PROJECT_NAME,
+    MAX_LENGTH_PURPOSE,
     STATUS_CHOICES,
 )
 
 User = get_user_model()
 
 
-class Specialization(models.Model):
-    """
-    Модель представляющая специализацию, подразделяется на специальности.
-    """
-
-    name = models.CharField("Название специализации", max_length=NAME_LENGTH)
-
-    class Meta:
-        verbose_name = "Специализация"
-        verbose_name_plural = "Специализации"
-
-    def __str__(self) -> str:
-        return self.name
-
-
-class Level(models.Model):
-    """
-    Модель представляющая уровень участников.
-    """
-
-    name = models.CharField("Название", max_length=NAME_LENGTH)
-
-    class Meta:
-        verbose_name = "Уровень"
-        verbose_name_plural = "Уровни"
-
-    def __str__(self) -> str:
-        return self.name
-
-
-class Skill(models.Model):
-    """
-    Модель представляющая необходимые для проекта навыки.
-    """
-
-    name = models.CharField("Название", max_length=NAME_LENGTH)
-
-    class Meta:
-        verbose_name = "Навык"
-        verbose_name_plural = "Навыки"
-
-    def __str__(self) -> str:
-        return self.name
-
-
 class Specialist(models.Model):
-    """
-    Модель представляющая специальность, входящую в специализацию.
-    """
+    """Модель специалиста."""
 
     specialization = models.ForeignKey(
         Specialization,
         on_delete=models.CASCADE,
         related_name="specialists",
-        verbose_name="Специализация",
+        verbose_name="Специальность",
     )
-    name = models.CharField("Название cпециальности", max_length=NAME_LENGTH)
+    name = models.CharField(
+        verbose_name="Название специализации",
+        max_length=MAX_LENGTH_PROFESSION_NAME,
+    )
 
     class Meta:
-        verbose_name = "Специальность"
-        verbose_name_plural = "Специальности"
+        verbose_name = "Специалист"
+        verbose_name_plural = "Специалисты"
 
     def __str__(self) -> str:
-        return self.name
-
-
-class Level(models.Model):
-    """
-    Модель представляющая уровень участников.
-    """
-
-    name = models.CharField("Название", max_length=NAME_LENGTH)
-
-    class Meta:
-        verbose_name = "Уровень"
-        verbose_name_plural = "Уровни"
-
-    def __str__(self) -> str:
-        return self.name
-
-
-class Status(models.Model):
-    """
-    Модель представляющая статус проекта.
-    """
-
-    name = models.CharField("Название", max_length=NAME_LENGTH)
-
-    class Meta:
-        verbose_name = "Статус"
-        verbose_name_plural = "Статусы"
-
-    def __str__(self) -> str:
-        return self.name
-
-
-class Skill(models.Model):
-    """
-    Модель представляющая необходимые для проекта навыки.
-    """
-
-    name = models.CharField("Название", max_length=NAME_LENGTH)
-
-    class Meta:
-        verbose_name = "Навык"
-        verbose_name_plural = "Навыки"
-
-    def __str__(self) -> str:
-        return self.name
+        return f"{self.specialization.name} {self.name}"
 
 
 class Project(CreatedModifiedFields):
-    """
-    Модель представляющая проект.
-    """
+    """Модель проект."""
 
-    name = models.CharField("Название проекта", max_length=NAME_LENGTH)
-    description = models.TextField(
-        "Описание проекта", max_length=DESCRIPTION_LENGTH
+    name = models.CharField(
+        verbose_name="Название проекта",
+        max_length=MAX_LENGTH_PROJECT_NAME,
     )
-    purpose = models.CharField("Цель проекта", max_length=NAME_LENGTH)
+    description = models.TextField(
+        verbose_name="Описание проекта",
+        max_length=MAX_LENGTH_DESCRIPTION,
+    )
     creator = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name="projects",
+        related_name="created_projects",
         verbose_name="Организатор",
     )
-    started = models.DateField("Дата начала проекта", null=True, blank=True)
-    ended = models.DateField("Дата окончания проекта", null=True, blank=True)
-    specialists = models.ManyToManyField(
-        Specialist,
-        related_name="projects",
-        verbose_name="Специальности",
-    )
-    skills = models.ManyToManyField(
-        Skill,
-        related_name="project_skills",
-        verbose_name="Навыки",
-    )
-    busyness = models.IntegerField(
-        choices=BUSYNESS_CHOICES,
-        verbose_name="Занятость в часах в неделю",
-    )
-    recruitment_status = models.IntegerField(
-        choices=STATUS_CHOICES,
-        verbose_name="Статус набора участников",
-        default=1,
-    )
-    status = models.ForeignKey(
-        Status,
+    owner = models.ForeignKey(
+        User,
         on_delete=models.CASCADE,
+        related_name="owned_projects",
+        verbose_name="Владелец",
+    )
+    started = models.DateField(
+        verbose_name="Начало проекта",
+        null=True,
+        blank=True,
+    )
+    ended = models.DateField(
+        verbose_name="Окончание проекта",
+        null=True,
+        blank=True,
+    )
+    busyness = models.PositiveSmallIntegerField(
+        verbose_name="Занятость в часах в неделю",
+        choices=BUSYNESS_CHOICES,
+    )
+    recruitment_status = models.BooleanField(
+        verbose_name="Статус набора участников",
+        default=False,
+    )
+    status = models.PositiveSmallIntegerField(
         verbose_name="Статус проекта",
+        choices=STATUS_CHOICES,
     )
     contacts = models.TextField(
-        "Контакты для связи", max_length=CONTACTS_LENGTH
+        verbose_name="Контакты для связи",
+        max_length=MAX_LENGTH_CONTACTS,
     )
-    direction = models.IntegerField(
-        choices=DIRECTION_CHOICES,
+    direction = models.PositiveSmallIntegerField(
         verbose_name="Направление разработки",
+        choices=DIRECTION_CHOICES,
     )
     participants = models.ManyToManyField(
         User,
-        related_name="project_participants",
-        verbose_name="Команда проекта",
+        verbose_name="Участники проекта",
+        related_name="projects_participated",
+        blank=True,
     )
 
     class Meta:
@@ -191,28 +110,35 @@ class Project(CreatedModifiedFields):
 
 
 class ProjectSpecialist(models.Model):
-    """
-    Модель представляющая специалиста проекта.
-    """
+    """Модель количества специалистов необходимых проекту."""
 
     project = models.ForeignKey(
-        Project, on_delete=models.CASCADE, related_name="project_specialists"
+        Project,
+        on_delete=models.CASCADE,
+        verbose_name="Проект",
     )
-    specialists = models.ForeignKey(
+    specialist = models.ForeignKey(
         Specialist,
         on_delete=models.CASCADE,
-        related_name="project_specialists",
+        verbose_name="Специалист",
     )
-    specialists_count = models.IntegerField(
-        "Количество требуемых специалистов"
+    skills = models.ManyToManyField(
+        Skill,
+        verbose_name="Навыки",
     )
-    level = models.ForeignKey(
-        Level,
-        on_delete=models.CASCADE,
-        verbose_name="Уровень специалиста",
+    count = models.PositiveSmallIntegerField(
+        verbose_name="Количество",
     )
-    is_required = models.BooleanField("Требуется для проекта", default=False)
+    level = models.PositiveSmallIntegerField(
+        verbose_name="Уровень",
+        choices=LEVEL_CHOICES,
+    )
+    is_required = models.BooleanField(
+        verbose_name="Требуется для проекта",
+        default=False,
+    )
 
     class Meta:
         verbose_name = "Специалист проекта"
         verbose_name_plural = "Специалисты проекта"
+        default_related_name = "project_specialists"

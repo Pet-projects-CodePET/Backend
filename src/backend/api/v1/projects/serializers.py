@@ -1,67 +1,64 @@
 from rest_framework import serializers
 
+from api.v1.general.serializers import (
+    SkillSerializer,
+    SpecializationSerializer,
+)
 from apps.project.models import (
     Project,
     ProjectSpecialist,
-    Skill,
     Specialist,
     Specialization,
-    Status,
 )
 
 
 class SpecialistSerializer(serializers.ModelSerializer):
-    """Сериализатор получения специалистов."""
+    """Сериализатор специалистов."""
 
-    class Meta:
-        model = Specialist
-        fields = ("id", "name", "specialization")
-
-
-class SpecializationSerializer(serializers.ModelSerializer):
-    """Сериализатор получения специализации."""
-
-    class Meta:
-        model = Specialization
-        fields = ("id", "name")
-
-
-class SkillSerializer(serializers.ModelSerializer):
-    """Сериализатор получения навыков."""
-
-    class Meta:
-        model = Skill
-        fields = ("id", "name")
-
-
-class CustomSpecializationSerializer(SpecialistSerializer):
     specialization = SpecializationSerializer()
 
     class Meta:
-        model = ProjectSpecialist
-        fields = ("id", "specialization")
+        model = Specialist
+        fields = (
+            "id",
+            "name",
+            "specialization",
+        )
 
 
-class StatusSerializer(serializers.ModelSerializer):
-    """Сериализатор получения статуса проектов."""
+class ProjectSpecialistSerializer(SpecialistSerializer):
+    """Сериализатор специалистов необходимых проекту."""
+
+    specialist = SpecialistSerializer()
+    skills = SkillSerializer(many=True)
+    level = serializers.SerializerMethodField()
 
     class Meta:
-        model = Status
-        fields = ("id", "name")
+        model = ProjectSpecialist
+        fields = (
+            "specialist",
+            "skills",
+            "count",
+            "level",
+            "is_required",
+        )
+
+    def get_level(self, obj) -> str:
+        return obj.get_level_display()
 
 
 class ProjectSerializer(serializers.ModelSerializer):
-    """Сериализатор получения проектов."""
+    """Сериализатор проектов."""
 
-    specialists = CustomSpecializationSerializer(many=True)
-
-    status = StatusSerializer()
-    skills = SkillSerializer(many=True)
-
+    project_specialists = ProjectSpecialistSerializer(many=True)
     direction = serializers.SerializerMethodField()
+    status = serializers.SerializerMethodField()
 
     def get_direction(self, obj) -> str:
         return obj.get_direction_display()
+
+    def get_status(self, obj) -> str:
+        return obj.get_status_display()
 
     class Meta:
         model = Project
@@ -71,21 +68,28 @@ class ProjectSerializer(serializers.ModelSerializer):
             "description",
             "started",
             "ended",
-            "specialists",
-            "skills",
             "direction",
+            "creator",
+            "owner",
+            "project_specialists",
             "status",
         )
 
 
-class PreviewProjectSerializer(serializers.ModelSerializer):
-    """Сериализатор получения превью проектов."""
+class ProjectPreviewMainSerializer(serializers.ModelSerializer):
+    """Сериализатор превью проектов."""
 
-    specialists = SpecialistSerializer(many=True)
+    specializations = serializers.SerializerMethodField()
     direction = serializers.SerializerMethodField()
 
     def get_direction(self, obj) -> str:
         return obj.get_direction_display()
+
+    def get_specializations(self, obj) -> list[str]:
+        return [
+            specialist.specialist.specialization.name
+            for specialist in obj.project_specialists.all()
+        ]
 
     class Meta:
         model = Project
@@ -94,6 +98,6 @@ class PreviewProjectSerializer(serializers.ModelSerializer):
             "name",
             "started",
             "ended",
-            "specialists",
             "direction",
+            "specializations",
         )
