@@ -24,6 +24,9 @@ class Section(models.Model):
     description = models.TextField(
         verbose_name="Текст", max_length=DESCRIPRION_LENGTH, null=False
     )
+    page_id = models.IntegerField(
+        verbose_name="Идентификатор страницы", null=False, default=0
+    )
 
     def __str__(self):
         return self.title
