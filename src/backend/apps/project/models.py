@@ -166,11 +166,13 @@ class Project(CreatedModifiedFields):
 
 
 class UserFavoriteProjectsRelation(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Пользователь")
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, verbose_name="Пользователь"
+    )
     projects = models.ManyToManyField(
         Project,
         verbose_name="Избранные проекты пользователя",
-        related_name="favorited_by"
+        related_name="favorited_by",
     )
 
     class Meta:
