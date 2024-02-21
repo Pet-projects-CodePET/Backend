@@ -17,6 +17,7 @@ DIRECTION_CHOICES = [
 STATUS_CHOICES = [
     (1, "Активен"),
     (2, "Завершен"),
+    (3, "Черновик"),
 ]
 
 PROJECTS_PER_PAGE = 10

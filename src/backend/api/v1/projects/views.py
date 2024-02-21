@@ -7,7 +7,7 @@ from apps.general.models import Skill
 from apps.project.models import Project, ProjectSpecialist
 
 from .constants import PROJECT_PREVIEW_MAIN_FIELDS
-from .paginations import ProjectPreviewMainPagination, ProjectPreviewPagination
+from .paginations import ProjectPagination, ProjectPreviewMainPagination
 from .serializers import ProjectPreviewMainSerializer, ProjectSerializer
 
 
@@ -28,7 +28,7 @@ class ProjectViewSet(ModelViewSet):
     )
     permission_classes = (IsAuthenticatedOrReadOnly,)
     serializer_class = ProjectSerializer
-    pagination_class = ProjectPreviewPagination
+    pagination_class = ProjectPagination
 
 
 class ProjectPreviewMainViewSet(mixins.ListModelMixin, GenericViewSet):
