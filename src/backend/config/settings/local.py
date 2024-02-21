@@ -1,6 +1,6 @@
 from .base import *  # noqa
 
-DEBUG = getenv("DEBUG", default="False") == "True"
+DEBUG = getenv("DEBUG", default="True") == "True"
 
 if getenv("USE_SQLITE", default="True") == "True":
     DATABASES = {
@@ -22,6 +22,8 @@ else:
             "PORT": getenv("DB_PORT", default=5432),
         }
     }
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 LOGGING = {
     "version": 1,

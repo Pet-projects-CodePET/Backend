@@ -16,11 +16,14 @@ psycopg2-binary = "^2.9.9"
 gunicorn = "^21.2.0"
 python-dotenv = "^1.0.0"
 pillow = "^10.1.0"
+djoser = "^2.2.2"
+drf-spectacular = "^0.27.1"
+django-filter = "^23.5"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.5.0"
 black = "^23.12.1"
-isort = "^5.12.2"
+isort = "5.13.2"
 
 [build-system]
 requires = ["poetry-core"]
@@ -29,6 +32,7 @@ build-backend = "poetry.core.masonry.api"
 [tool.isort]
 profile = "black"
 line_length = 79
+remove_redundant_aliases = true
 skip_glob = ["**/migrations/*.py"]
 src_paths = ["src/backend"]
 
