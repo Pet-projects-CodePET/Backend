@@ -1,5 +1,4 @@
 from django.contrib.auth.models import AbstractUser, UserManager
-from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -7,9 +6,9 @@ from apps.general.constants import EMAIL_HELP_TEXT, MAX_LENGTH_EMAIL
 from apps.general.models import CreatedModifiedFields
 from apps.general.validators import CustomEmailValidator
 from apps.users.constants import (
-    MAX_LENGTH_NICKNAME,
-    NICKNAME_ERROR_TEXT,
-    NICKNAME_HELP_TEXT,
+    MAX_LENGTH_USERNAME,
+    USERNAME_ERROR_TEXT,
+    USERNAME_HELP_TEXT,
 )
 
 
@@ -42,12 +41,11 @@ class User(CreatedModifiedFields, AbstractUser):
     )
     username = models.CharField(
         _("username"),
-        max_length=MAX_LENGTH_NICKNAME,
+        max_length=MAX_LENGTH_USERNAME,
         unique=True,
-        help_text=NICKNAME_HELP_TEXT,
-        validators=[UnicodeUsernameValidator()],
+        help_text=USERNAME_HELP_TEXT,
         error_messages={
-            "unique": NICKNAME_ERROR_TEXT,
+            "unique": USERNAME_ERROR_TEXT,
         },
     )
 
@@ -59,6 +57,8 @@ class User(CreatedModifiedFields, AbstractUser):
     objects = CustomUserManager()
 
     class Meta:
+        verbose_name = _("user")
+        verbose_name_plural = _("users")
         ordering = (
             "created",
             "username",
