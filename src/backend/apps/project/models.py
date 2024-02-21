@@ -163,3 +163,20 @@ class Project(CreatedModifiedFields):
 
     def __str__(self) -> str:
         return self.name
+
+
+class UserFavoriteProjectsRelation(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Пользователь")
+    projects = models.ManyToManyField(
+        Project,
+        verbose_name="Избранные проекты пользователя",
+        related_name="favorited_by"
+    )
+
+    class Meta:
+        verbose_name = "Отношение пользователя к его избранным книгам"
+        verbose_name_plural = "Отношения пользователей к их избранным книгам"
+        ordering = ("user",)
+
+    def __str__(self):
+        return self.user.name
