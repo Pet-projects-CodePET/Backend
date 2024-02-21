@@ -34,4 +34,48 @@ class Migration(migrations.Migration):
                 ),
             ],
         ),
+        migrations.CreateModel(
+            name="Skill",
+            fields=[
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(max_length=100, verbose_name="Название"),
+                ),
+            ],
+            options={
+                "verbose_name": "Навык",
+                "verbose_name_plural": "Навыки",
+            },
+        ),
+        migrations.CreateModel(
+            name="Specialization",
+            fields=[
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(max_length=100, verbose_name="Название"),
+                ),
+            ],
+            options={
+                "verbose_name": "Специальность",
+                "verbose_name_plural": "Специальности",
+            },
+        ),
     ]
