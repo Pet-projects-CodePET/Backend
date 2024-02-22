@@ -33,3 +33,14 @@ services:
       - /etc/letsencrypt:/etc/letsencrypt
     depends_on:
       - backend
+
+  frontend:
+    image: ${DOCKERHUB_USERNAME_FRONT}/code-pet:latest
+    env_file: .env
+    ports:
+      - "3000:3000"
+    volumes:
+      - static_volume:/frontend_static
+    depends_on:
+      - db
+      - backend
