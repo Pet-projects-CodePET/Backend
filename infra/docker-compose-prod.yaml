@@ -44,3 +44,4 @@ services:
     depends_on:
       - db
       - backend
+      - nginx
