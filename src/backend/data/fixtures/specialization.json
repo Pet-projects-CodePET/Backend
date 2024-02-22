@@ -1,0 +1,8 @@
+[
+{"model": "project.specialization", "pk": 1, "fields": {"name": "разработка"}},
+{"model": "project.specialization", "pk": 2, "fields": {"name": "тестирование"}},
+{"model": "project.specialization", "pk": 3, "fields": {"name": "администрирование"}},
+{"model": "project.specialization", "pk": 4, "fields": {"name": "дизайн"}},
+{"model": "project.specialization", "pk": 5, "fields": {"name": "менеджмент"}},
+{"model": "project.specialization", "pk": 6, "fields": {"name": "аналитика"}}
+]
