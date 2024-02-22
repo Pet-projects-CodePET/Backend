@@ -2,7 +2,7 @@ name: Codepet deploy
 
 on:
   push:
-    branches: [ 'master', 'main', 'develop' ]
+    branches: [ 'main', 'develop' ]
 
 jobs:
   build_and_push_to_docker_hub_backend:
@@ -72,6 +72,7 @@ jobs:
             POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
             PROJECT_NAME=${{ secrets.PROJECT_NAME }}
             DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}
+            ALLOWED_HOSTS =${{ secrets.ALLOWED_HOSTS }}
           _EOF_
     - name: Copy docker-compose-prod.yaml via ssh
       uses: appleboy/scp-action@master

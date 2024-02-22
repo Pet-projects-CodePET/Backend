@@ -20,7 +20,6 @@ services:
       - "8000:8000"
     volumes:
       - static_volume:/backend_static
-      - ./.env:/app
     depends_on:
       - db
 
