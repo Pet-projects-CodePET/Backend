@@ -35,7 +35,7 @@ services:
       - backend
 
   frontend:
-    image: ${DOCKERHUB_USERNAME_FRONT}/code-pet:latest
+    image: ${DOCKERHUB_USERNAME_FRONT}/${PROJECT_NAME}_frontend:latest
     env_file: .env
     ports:
       - "3000:3000"
