@@ -61,7 +61,7 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         passphrase: ${{ secrets.SSH_PASSPHRASE }}
         script: |
-          sudo rm -r ${{ secrets.PROJECT_NAME }}/infra
+          sudo rm -r ${{ secrets.PROJECT_NAME }}
           sudo mkdir -p ${{ secrets.PROJECT_NAME }}/infra
           sudo chmod 777 ${{ secrets.PROJECT_NAME }}/infra
           sudo cat > ${{ secrets.PROJECT_NAME }}/infra/.env << _EOF_
