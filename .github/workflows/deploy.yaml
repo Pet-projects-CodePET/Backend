@@ -98,4 +98,5 @@ jobs:
           sudo docker compose -f docker-compose-prod.yaml down
           sudo docker compose -f docker-compose-prod.yaml up -d
           sudo docker compose -f docker-compose-prod.yaml exec backend python manage.py migrate
+          sudo docker compose -f docker-compose-prod.yaml exec backend python manage.py collectstatic --no-input
           sudo docker system prune -f
