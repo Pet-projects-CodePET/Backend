@@ -65,13 +65,13 @@ jobs:
           sudo mkdir -p ${{ secrets.PROJECT_NAME }}/infra
           sudo chmod 777 ${{ secrets.PROJECT_NAME }}/infra
           sudo cat > ${{ secrets.PROJECT_NAME }}/infra/.env << _EOF_
-            SECRET_KEY=${{ secrets.SECRET_KEY }}
             POSTGRES_DB=${{ secrets.POSTGRES_DB }}
             POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}
             POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}
             POSTGRES_USER=${{ secrets.POSTGRES_USER }}
             POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
             PROJECT_NAME=${{ secrets.PROJECT_NAME }}
+            SECRET_KEY=${{ secrets.SECRET_KEY }}
             DOCKERHUB_USERNAME_FRONT=${{ secrets.DOCKERHUB_USERNAME_FRONT }}
             DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}
             ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }}
