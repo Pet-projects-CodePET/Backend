@@ -26,7 +26,7 @@ services:
   nginx:
     image: ${DOCKERHUB_USERNAME}/${PROJECT_NAME}_nginx:latest
     ports:
-      - "80:80"
+      - "8000:80"
       - "443:443"
     volumes:
       - static_volume:/static
