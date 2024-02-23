@@ -61,10 +61,10 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         passphrase: ${{ secrets.SSH_PASSPHRASE }}
         script: |
-          sudo rm -r ${{ secrets.PROJECT_NAME }}
-          sudo mkdir -p ${{ secrets.PROJECT_NAME }}
-          sudo chmod 777 ${{ secrets.PROJECT_NAME }}
-          sudo cat > ${{ secrets.PROJECT_NAME }}/.env << _EOF_
+          sudo rm -r ${{ secrets.PROJECT_NAME }}/infra
+          sudo mkdir -p ${{ secrets.PROJECT_NAME }}/infra
+          sudo chmod 777 ${{ secrets.PROJECT_NAME }}/infra
+          sudo cat > ${{ secrets.PROJECT_NAME }}/infra/.env << _EOF_
             POSTGRES_DB=${{ secrets.POSTGRES_DB }}
             POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}
             POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}
@@ -92,7 +92,7 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         passphrase: ${{ secrets.SSH_PASSPHRASE }}
         script: |
-          cd codepet
+          cd codepet/infra
           sudo docker compose -f docker-compose-prod.yaml pull
           sudo docker compose -f docker-compose-prod.yaml down
           sudo docker compose -f docker-compose-prod.yaml up -d
