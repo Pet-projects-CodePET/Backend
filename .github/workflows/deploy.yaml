@@ -23,7 +23,7 @@ jobs:
         with:
           context: ./
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ PROJECT_NAME }}_backend:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROJECT_NAME }}_backend:latest
 
   build_and_push_to_docker_hub_nginx:
     name: Push gateway Docker image to DockerHub
@@ -43,7 +43,7 @@ jobs:
         with:
           context: ./nginx/
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ PROJECT_NAME }}_nginx:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROJECT_NAME }}_nginx:latest
 
   deploy:
     runs-on: ubuntu-latest
