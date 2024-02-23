@@ -42,6 +42,5 @@ services:
     volumes:
       - static_volume:/frontend_static
     depends_on:
-      - db
       - backend
       - nginx
