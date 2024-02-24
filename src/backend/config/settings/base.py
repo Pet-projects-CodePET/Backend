@@ -111,7 +111,7 @@ USE_TZ = True
 
 
 STATIC_URL = "static/"
-STATIC_ROOT = Path(BASE_DIR, "collected_static")
+STATIC_ROOT = Path(BASE_DIR, "static")
 
 MEDIA_URL = "media/"
 MEDIA_ROOT = Path(BASE_DIR, "media")
