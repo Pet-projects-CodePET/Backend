@@ -28,7 +28,7 @@ services:
   nginx:
     image: ${DOCKERHUB_USERNAME}/${PROJECT_NAME}_nginx:latest
     ports:
-      - "8000:80"
+      - "80:80"
     volumes:
       - static_volume:/staticfiles/
       - media_value:/var/html/media/
