@@ -1,0 +1,9 @@
+.git
+.venv
+.idea
+.mypy_cache
+.vscode
+.env.example
+db.sqlite3
+poetry.lock
+pyproject.toml
