@@ -3,6 +3,7 @@ version: '3'
 volumes:
   pg_data:
   static_volume:
+  media_value:
 
 services:
   db:
