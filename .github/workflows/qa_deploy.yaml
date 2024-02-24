@@ -1,4 +1,4 @@
-name: Codepet deploy
+name: Codepet QA_deploy
 
 on:
   push:
