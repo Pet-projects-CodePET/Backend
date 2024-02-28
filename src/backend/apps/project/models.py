@@ -165,20 +165,24 @@ class Project(CreatedModifiedFields):
         return self.name
 
 
-class UserFavoriteProjectsRelation(models.Model):
+class FavoriteProject(models.Model):
+    """Модель избранных проектов"""
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, verbose_name="Пользователь"
     )
-    projects = models.ManyToManyField(
-        Project,
-        verbose_name="Избранные проекты пользователя",
-        related_name="favorited_by",
+    project = models.ForeignKey(
+        Project, on_delete=models.CASCADE, verbose_name="Избранные проекты"
     )
 
     class Meta:
-        verbose_name = "Отношение пользователя к его избранным книгам"
-        verbose_name_plural = "Отношения пользователей к их избранным книгам"
-        ordering = ("user",)
+        verbose_name = "Избранный проект"
+        verbose_name_plural = "Избранные проекты"
+        ordering = ("user", )
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "project"], name="unique_fields_together"
+            )
+        ]
 
-    def __str__(self):
-        return self.user.name
+    def __str__(self) -> str:
+        return f"{self.user.username} {self.project.name}"

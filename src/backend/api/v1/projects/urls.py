@@ -1,12 +1,12 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 
-from api.v1.projects.views import (
-    AddFavoriteProject,
-    UserFavoriteProjectsListAPIView,
-)
+from api.v1.projects.views import FavoriteViewSet
 
+
+router = DefaultRouter()
+router.register(r"favorite", FavoriteViewSet)
 
 urlpatterns = [
-    path("add_favorite_project", AddFavoriteProject.as_view()),
-    path("favorite_projects_list", UserFavoriteProjectsListAPIView.as_view()),
+    path("", include(router.urls)),
 ]
