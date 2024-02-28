@@ -1,23 +1,17 @@
 from django.contrib import admin
 
-from .constants import LIST_PER_PAGE
-from .models import Level, Project, Skill, Specialist, Specialization, Status
+from .constants import PROJECTS_PER_PAGE
+from .models import (
+    Project,
+    ProjectSpecialist,
+    Skill,
+    Specialist,
+    Specialization,
+)
 
 
 @admin.register(Skill)
 class SkillAdmin(admin.ModelAdmin):
-    list_display = ("name",)
-    search_fields = ("name",)
-
-
-@admin.register(Status)
-class StatusAdmin(admin.ModelAdmin):
-    list_display = ("name",)
-    search_fields = ("name",)
-
-
-@admin.register(Level)
-class LevelAdmin(admin.ModelAdmin):
     list_display = ("name",)
     search_fields = ("name",)
 
@@ -39,16 +33,29 @@ class SpecializationAdmin(admin.ModelAdmin):
 class ProjectAdmin(admin.ModelAdmin):
     list_display = (
         "name",
+        "description",
         "creator",
         "started",
         "ended",
         "contacts",
-        "level",
         "busyness",
         "recruitment_status",
         "status",
         "direction",
     )
-    list_filter = ("level", "busyness", "status")
+    list_filter = ("busyness", "status")
     search_fields = ("name", "description", "purpose", "creator__username")
-    list_per_page = LIST_PER_PAGE
+    list_per_page = PROJECTS_PER_PAGE
+
+
+@admin.register(ProjectSpecialist)
+class ProjectSpecialistAdmin(admin.ModelAdmin):
+    list_display = (
+        "project",
+        "specialist",
+        "level",
+        "count",
+        "is_required",
+    )
+    list_filter = ("project",)
+    search_fields = ("project",)
