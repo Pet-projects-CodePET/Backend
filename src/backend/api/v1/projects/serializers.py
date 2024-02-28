@@ -11,10 +11,11 @@ User = get_user_model()
 
 class FavoriteProjectSerializer(ModelSerializer):
     """Сериализатор избранных проектов"""
+
     user = serializers.PrimaryKeyRelatedField(
         queryset=User.objects.all(),
         default=serializers.CurrentUserDefault(),
-        required=False
+        required=False,
     )
 
     class Meta:
@@ -24,6 +25,6 @@ class FavoriteProjectSerializer(ModelSerializer):
             serializers.UniqueTogetherValidator(
                 queryset=FavoriteProject.objects.all(),
                 fields=["user", "projects"],
-                message="Данный проект уже находится в избранных проектах"
+                message="Данный проект уже находится в избранных проектах",
             )
         ]

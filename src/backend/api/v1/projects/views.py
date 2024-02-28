@@ -6,8 +6,11 @@ from apps.project.models import FavoriteProject
 from api.v1.projects.serializers import FavoriteProjectSerializer
 
 
-class FavoriteViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, GenericViewSet):
+class FavoriteViewSet(
+    mixins.CreateModelMixin, mixins.ListModelMixin, GenericViewSet
+):
     """Вьюсет избранных проектов"""
+
     queryset = FavoriteProject.objects.all()
-    permission_classes = (IsAuthenticatedOrReadOnly, )
+    permission_classes = (IsAuthenticatedOrReadOnly,)
     serializer_class = FavoriteProjectSerializer

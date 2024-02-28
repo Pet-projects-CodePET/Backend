@@ -167,6 +167,7 @@ class Project(CreatedModifiedFields):
 
 class FavoriteProject(models.Model):
     """Модель избранных проектов"""
+
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, verbose_name="Пользователь"
     )
@@ -177,7 +178,7 @@ class FavoriteProject(models.Model):
     class Meta:
         verbose_name = "Избранный проект"
         verbose_name_plural = "Избранные проекты"
-        ordering = ("user", )
+        ordering = ("user",)
         constraints = [
             models.UniqueConstraint(
                 fields=["user", "project"], name="unique_fields_together"
