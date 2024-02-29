@@ -1,8 +1,18 @@
 [
-{"model": "project.specialization", "pk": 1, "fields": {"name": "разработка"}},
-{"model": "project.specialization", "pk": 2, "fields": {"name": "тестирование"}},
-{"model": "project.specialization", "pk": 3, "fields": {"name": "администрирование"}},
-{"model": "project.specialization", "pk": 4, "fields": {"name": "дизайн"}},
-{"model": "project.specialization", "pk": 5, "fields": {"name": "менеджмент"}},
-{"model": "project.specialization", "pk": 6, "fields": {"name": "аналитика"}}
+{"model": "project.specialization", "pk": 1, "fields": {"name": "Десктоп разработчик / Software Developer"}},
+{"model": "project.specialization", "pk": 2, "fields": {"name": "Бэкенд разработчик / Backend Developer"}},
+{"model": "project.specialization", "pk": 3, "fields": {"name": "Фронтенд разработчик / Frontend Developer"}},
+{"model": "project.specialization", "pk": 4, "fields": {"name": "Фулстек разработчик / Fullstack Developer"}},
+{"model": "project.specialization", "pk": 5, "fields": {"name": "Разработчик мобильных приложений / Mobile Application Developer"}},
+{"model": "project.specialization", "pk": 6, "fields": {"name": "Инженер по автоматизации тестирования / Test Automation Engineer"}},
+{"model": "project.specialization", "pk": 7, "fields": {"name": "Инженер по ручному тестированию / Manual Test Engineer"}},
+{"model": "project.specialization", "pk": 8, "fields": {"name": "Инженер по нагрузочному тестированию / Performance Engineer"}},
+{"model": "project.specialization", "pk": 9, "fields": {"name": "Системный администратор / System Administration"}},
+{"model": "project.specialization", "pk": 10, "fields": {"name": "DevOps-инженер / DevOps"}},
+{"model": "project.specialization", "pk": 11, "fields": {"name": "UI/UX дизайнер / UI/UX Designer"}},
+{"model": "project.specialization", "pk": 12, "fields": {"name": "Графический дизайнер / Graphic Designer"}},
+{"model": "project.specialization", "pk": 13, "fields": {"name": "Менеджер проекта / Project Manager"}},
+{"model": "project.specialization", "pk": 14, "fields": {"name": "Системный аналитик / Systems Analyst"}},
+{"model": "project.specialization", "pk": 15, "fields": {"name": "Бизнес-аналитик / Business Analyst"}},
+{"model": "project.specialization", "pk": 16, "fields": {"name": "Аналитик по данным / Data Analyst"}}
 ]
