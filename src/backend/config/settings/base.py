@@ -38,6 +38,7 @@ LOCAL_APPS: list = [
     "apps.general",
     "apps.users",
     "apps.project",
+    "apps.profile",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
