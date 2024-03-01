@@ -29,6 +29,7 @@ services:
     image: ${DOCKERHUB_USERNAME}/${PROJECT_NAME}_nginx:latest
     ports:
       - "80:80"
+      - "443:443"
     volumes:
       - static_volume:/staticfiles/
       - media_value:/var/html/media/
@@ -39,6 +40,7 @@ services:
   frontend:
     image: ${DOCKERHUB_USERNAME_FRONT}/${PROJECT_NAME}_frontend:latest
     env_file: .env
+    command: cp -r /app/build/. /frontend_static/
     ports:
       - "3000:3000"
     volumes:
