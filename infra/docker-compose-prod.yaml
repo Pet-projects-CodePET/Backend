@@ -25,6 +25,17 @@ services:
     depends_on:
       - db
 
+  frontend:
+    image: ${DOCKERHUB_USERNAME_FRONT}/${PROJECT_NAME}_frontend:latest
+    env_file: .env
+    command: cp -r /app/build/. /frontend_static/
+    ports:
+      - "3000:3000"
+    volumes:
+      - static_volume:/frontend_static
+    depends_on:
+      - db
+
   nginx:
     image: ${DOCKERHUB_USERNAME}/${PROJECT_NAME}_nginx:latest
     ports:
@@ -36,14 +47,4 @@ services:
       - /etc/letsencrypt:/etc/letsencrypt
     depends_on:
       - backend
-
-  frontend:
-    image: ${DOCKERHUB_USERNAME_FRONT}/${PROJECT_NAME}_frontend:latest
-    env_file: .env
-    command: cp -r /app/build/. /frontend_static/
-    ports:
-      - "3000:3000"
-    volumes:
-      - static_volume:/frontend_static
-    depends_on:
-      - backend
+      - frontend
