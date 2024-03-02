@@ -29,7 +29,7 @@ services:
 
   frontend:
     image: ${DOCKERHUB_USERNAME_FRONT}/${PROJECT_NAME}_frontend:latest
-    restart: always
+    command: cp -r out/. /frontend_static/
     env_file: .env
     ports:
       - "3000:3000"
