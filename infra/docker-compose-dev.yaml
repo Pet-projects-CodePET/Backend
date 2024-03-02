@@ -13,23 +13,23 @@ services:
       - POSTGRES_PASSWORD=admin
 
   backend:
-    image: ${DOCKERHUB_USERNAME}/${PROJECT_NAME}_backend:latest
+    build: ../.
     env_file: .env
     ports:
       - "8000:8000"
     volumes:
-      - static_volume:/backend_static
+      - static_volume:/backend_static/
       - ./.env:/app
     depends_on:
       - db
 
   nginx:
-    image: ${DOCKERHUB_USERNAME}/${PROJECT_NAME}_nginx:latest
+    build: /nginx/.
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - static_volume:/static
+      - static_volume:/staticfiles/
       - /etc/letsencrypt:/etc/letsencrypt
     depends_on:
       - backend
