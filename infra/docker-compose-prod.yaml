@@ -7,7 +7,7 @@ volumes:
 
 services:
   db:
-    image: postgres:latest
+    image: postgres:16.2-alpine
     restart: always
     env_file: .env
     ports:
@@ -19,8 +19,6 @@ services:
     image: ${DOCKERHUB_USERNAME}/${PROJECT_NAME}_backend:latest
     restart: always
     env_file: .env
-    ports:
-      - "8000:8000"
     volumes:
       - static_volume:/backend_static/
       - media_value:/backend_media/
@@ -31,8 +29,6 @@ services:
     image: ${DOCKERHUB_USERNAME_FRONT}/${PROJECT_NAME}_frontend:latest
     command: cp -r out/. /frontend_static/
     env_file: .env
-    ports:
-      - "3000:3000"
     volumes:
       - static_volume:/frontend_static
     depends_on:
