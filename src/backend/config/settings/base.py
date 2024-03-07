@@ -1,4 +1,3 @@
-import re
 from os import getenv
 from pathlib import Path
 
@@ -78,35 +77,20 @@ WSGI_APPLICATION = "config.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": getenv("DB_ENGINE", default="django.db.backends.postgresql"),
-        "NAME": getenv("POSTGRES_DB", default="db_test"),
+        "NAME": getenv("DB_NAME", default="db_test"),
         "USER": getenv("POSTGRES_USER", default="admin_test"),
         "PASSWORD": getenv("POSTGRES_PASSWORD", default="postgre_admin"),
-        "HOST": getenv("POSTGRES_HOST", default="db_test"),
-        "PORT": getenv("POSTGRES_PORT", default=5432),
+        "HOST": getenv("DB_HOST", default="db_test"),
+        "PORT": getenv("DB_PORT", default=5432),
     }
 }
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-    },
-    {
-        "NAME": "apps.users.validators.PasswordMaximumLengthValidator",
-        "OPTIONS": {
-            "message": "Пароль слишком длинный.",
-        },
-    },
-    {
-        "NAME": "apps.users.validators.PasswordRegexValidator",
-        "OPTIONS": {
-            "message": "В пароле недопустимые символы.",
-            "help_message": "В пароле допускаются цифры, буквы и спецсимовлы -!#$%%&'*+/=?^_;():@,.<>`{}~«»",
-            "regex": r"(^[-%!#$&*'+/=?^_;():@,.<>`{|}~-«»0-9A-ZА-ЯЁ]+)\Z",
-            "flags": re.IGNORECASE,
-        },
-    },
-    {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
     },
     {
         "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
