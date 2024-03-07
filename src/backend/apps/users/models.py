@@ -1,14 +1,17 @@
 from django.contrib.auth.models import AbstractUser, UserManager
+from django.core.validators import MinLengthValidator, RegexValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from apps.general.constants import EMAIL_HELP_TEXT, MAX_LENGTH_EMAIL
+from apps.general.constants import MAX_LENGTH_EMAIL
 from apps.general.models import CreatedModifiedFields
-from apps.general.validators import CustomEmailValidator
 from apps.users.constants import (
     MAX_LENGTH_USERNAME,
+    MIN_LENGTH_USERNAME,
+    USERNAME_ERROR_REGEX_TEXT,
     USERNAME_ERROR_TEXT,
     USERNAME_HELP_TEXT,
+    USERNAME_REGEX,
 )
 
 
@@ -36,8 +39,6 @@ class User(CreatedModifiedFields, AbstractUser):
         max_length=MAX_LENGTH_EMAIL,
         unique=True,
         blank=False,
-        help_text=EMAIL_HELP_TEXT,
-        validators=[CustomEmailValidator()],
     )
     username = models.CharField(
         _("username"),
@@ -47,6 +48,12 @@ class User(CreatedModifiedFields, AbstractUser):
         error_messages={
             "unique": USERNAME_ERROR_TEXT,
         },
+        validators=[
+            MinLengthValidator(limit_value=MIN_LENGTH_USERNAME),
+            RegexValidator(
+                regex=USERNAME_REGEX, message=USERNAME_ERROR_REGEX_TEXT
+            ),
+        ],
     )
 
     USERNAME_FIELD = "email"
