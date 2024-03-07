@@ -138,4 +138,3 @@ cython_debug/
 .vscode
 
 # Project
-**/data/logs/*
