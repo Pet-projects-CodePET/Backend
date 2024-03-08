@@ -3,7 +3,7 @@ repos:
     rev: v4.5.0
     hooks:
       - id: no-commit-to-branch
-        args: [-b main, -b develop]
+        args: [-b, main, -b, develop]
       - id: detect-private-key
       - id: trailing-whitespace
         args: [--markdown-linebreak-ext=md]
