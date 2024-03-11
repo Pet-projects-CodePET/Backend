@@ -1,11 +1,12 @@
 from django.db.models import Prefetch
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins
 from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
-from apps.general.models import Skill
 from apps.project.models import Project, ProjectSpecialist
 
+from .filters import ProjectFilter
 from .constants import PROJECT_PREVIEW_MAIN_FIELDS
 from .paginations import ProjectPagination, ProjectPreviewMainPagination
 from .serializers import ProjectPreviewMainSerializer, ProjectSerializer
@@ -29,6 +30,8 @@ class ProjectViewSet(ModelViewSet):
     permission_classes = (IsAuthenticatedOrReadOnly,)
     serializer_class = ProjectSerializer
     pagination_class = ProjectPagination
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = ProjectFilter
 
 
 class ProjectPreviewMainViewSet(mixins.ListModelMixin, GenericViewSet):

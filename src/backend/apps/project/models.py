@@ -99,6 +99,12 @@ class Project(CreatedModifiedFields):
         related_name="projects_participated",
         blank=True,
     )
+    skills = models.ManyToManyField(
+        Skill, related_name="projects", verbose_name="Проекты"
+    )
+    level = models.PositiveSmallIntegerField(
+        verbose_name="Уровень", choices=LEVEL_CHOICES, null=True, blank=True
+    )
 
     class Meta:
         verbose_name = "Проект"
