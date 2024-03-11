@@ -53,17 +53,7 @@ services:
     volumes:
       - static_volume:/staticfiles/
       - media_value:/var/html/media/
-      - ./certbot/www/:/var/www/certbot/
-      - ./certbot/conf/:/etc/nginx/ssl/
-    depends_on:
-      - backend
-      - frontend
-
-  certbot:
-    image: certbot/cerbot:latest
-    volumes:
-      - ./certbot/www/:/var/www/certbot/
-      - ./certbot/conf/:/etc/letsencrypt/
+      - /etc/letsencrypt:/etc/letsencrypt
     depends_on:
       - backend
       - frontend
