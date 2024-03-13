@@ -4,6 +4,8 @@ volumes:
   pg_data:
   static_volume:
   media_value:
+  certbot:
+  letsencrypt:
 
 services:
   db:
@@ -53,10 +55,8 @@ services:
     volumes:
       - static_volume:/staticfiles/
       - media_value:/var/html/media/
-      - ./data/certbot/www:/var/www/certbot/:ro
-      - ./data/nginx/conf/:/etc/nginx/conf.d/:ro
-      - ./data/certbot/conf/:/etc/nginx/ssl/:ro
-      - /etc/letsencrypt:/etc/letsencrypt
+      - certbot:/certbot/
+      - letsencrypt:/letsencrypt/
     restart: unless-stopped
     depends_on:
       - backend
@@ -65,8 +65,8 @@ services:
   certbot:
     image: certbot/certbot
     volumes:
-      - ./data/certbot/www/:/var/www/certbot/:rw
-      - ./data/certbot/conf/:/etc/letsencrypt/:rw
+      - certbot:/certbot/
+      - letsencrypt:/letsencrypt/
     restart: unless-stopped
     depends_on:
       - backend
