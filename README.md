@@ -7,7 +7,7 @@ RESTfull API приложение, разработанное для поиск�
 реализовать что-то новое, для менеджеров проектов и для компаний которые хотят
 создать тестовое МВП нового продукта.
 
-![workflow](https://github.com/Pet-projects-CodePET/Backend/actions/workflows/main.yml/badge.svg)
+[![Code cheсks](https://github.com/Pet-projects-CodePET/Backend/actions/workflows/code_check.yml/badge.svg)](https://github.com/Pet-projects-CodePET/Backend/actions/workflows/code_check.yml)
 
 ## Стек технологий:
 

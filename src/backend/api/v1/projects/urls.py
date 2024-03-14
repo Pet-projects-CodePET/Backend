@@ -1,14 +1,21 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from .views import ProjectPreviewMainViewSet, ProjectViewSet
+from api.v1.projects.views import (
+    DirectionViewSet,
+    ProjectPreviewMainViewSet,
+    ProjectViewSet,
+)
 
-router_v1 = DefaultRouter()
+router = DefaultRouter()
 
-router_v1.register(
+router.register(
     "preview_main", ProjectPreviewMainViewSet, basename="projects-preview-main"
 )
-router_v1.register("", ProjectViewSet, basename="projects")
+router.register("directions", DirectionViewSet, basename="projects-directions")
+router.register("", ProjectViewSet, basename="projects")
+
+
 urlpatterns = [
-    path("", include(router_v1.urls)),
+    path("", include(router.urls)),
 ]
