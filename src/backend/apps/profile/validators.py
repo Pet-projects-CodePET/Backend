@@ -5,18 +5,9 @@ from django.core.validators import RegexValidator
 from PIL import Image
 
 
-class MinLengthValidator:
-    def __init__(self, min_length):
-        self.min_length = min_length
+class BirthdayValidator:
+    """Валидатор, не позволяющий пользователю добавить будущую дату в качестве своего дня рождения"""
 
-    def validate(self, value):
-        if len(value) < self.min_length:
-            raise ValidationError(
-                f"Эта строка должна содержать минимум {self.min_length} символов."
-            )
-
-
-class AgeValidator:
     def __init__(self, min_age=0):
         self.min_age = min_age
 
@@ -28,6 +19,7 @@ class AgeValidator:
 
 
 def validate_image_format(value):
+    """Валидатор, позволяющий добавить аватар только определенного формата .png, .jpg или .jpeg"""
     valid_extensions = [".png", ".jpg", ".jpeg"]
     ext = value.name.lower().split(".")[-1]
     if not ext in valid_extensions:
@@ -37,12 +29,14 @@ def validate_image_format(value):
 
 
 def validate_image_size(value):
+    """Валидатор, не позволяющий загрузить картинку размером больше 10 MB"""
     max_size = 10 * 1024 * 1024  # 10 MB
     if value.size > max_size:
         raise ValidationError("Файл не должен превышать размер 10 MB.")
 
 
 def validate_image_resolution(value):
+    """Валидатор, ограничивающий размер картинки"""
     min_width, min_height = 320, 240
     max_width, max_height = 1920, 1080
 

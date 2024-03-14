@@ -1,7 +1,8 @@
-from django.urls import path
+from django.urls import include, path
 
-from api.v1.profile.views import ProfileView
+from api.v1.profile.views import ProfileListAPIView, ProfileView
 
 urlpatterns = [
-    path("profile/<int:pk>", ProfileView.as_view()),
+    path("profiles/", ProfileListAPIView.as_view(), name="profile-list"),
+    path("profiles/<pk>", ProfileView.as_view(), name="profile"),
 ]

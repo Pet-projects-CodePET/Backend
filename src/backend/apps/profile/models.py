@@ -1,4 +1,9 @@
-from django.core.validators import RegexValidator
+from django.core.validators import (
+    EmailValidator,
+    MinLengthValidator,
+    RegexValidator,
+    URLValidator,
+)
 from django.db import models
 
 from apps.general.constants import LEVEL_CHOICES
@@ -18,21 +23,22 @@ from apps.profile.constants import (
     MIN_LENGTH_NAME,
     MIN_LENGTH_PORTFOLIO,
     MIN_LENGTH_TELEGRAM,
+    VISIBLE_CHOICES,
 )
-from apps.profile.validators import (
-    AgeValidator,
-    MinLengthValidator,
-    validate_image,
-)
+from apps.profile.validators import BirthdayValidator, validate_image
 from apps.users.models import User
 
 
 class UserSkill(models.Model):
+    """Модель навыка пользователя"""
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     skill = models.ForeignKey(Skill, on_delete=models.CASCADE)
 
 
 class UserSpecialization(models.Model):
+    """Модель специализации пользователя"""
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     specialization = models.ForeignKey(
         Specialization, on_delete=models.CASCADE
@@ -40,6 +46,8 @@ class UserSpecialization(models.Model):
 
 
 class Profile(models.Model):
+    """Модель профиля пользователя"""
+
     avatar = models.ImageField(
         verbose_name="Аватар", upload_to="images/", validators=[validate_image]
     )
@@ -50,7 +58,11 @@ class Profile(models.Model):
             RegexValidator(
                 regex=r"^[a-zA-Zа-яА-Я -]+$",
                 message="Введите кириллицу или латиницу",
-            )
+            ),
+            MinLengthValidator(
+                limit_value=MIN_LENGTH_NAME,
+                message="Должно быть минимум символов",
+            ),
         ],
         blank=False,
     )
@@ -62,7 +74,8 @@ class Profile(models.Model):
             RegexValidator(
                 regex=r"^[a-zA-Zа-яА-Я0-9\s!@#$%^&*()-_+=<>?]+$",
                 message="Введите кириллицу или латиницу",
-            )
+            ),
+            MinLengthValidator(limit_value=MIN_LENGTH_ABOUT),
         ],
     )
     portfolio_link = models.URLField(
@@ -70,10 +83,8 @@ class Profile(models.Model):
         blank=False,
         max_length=MAX_LENGTH_URL,
         validators=[
-            RegexValidator(
-                regex=r"^(?i)(http|https):\/\/(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[a-zA-Z\d!@#$%^&*()_+]+(?:\.[a-zA-Z\d!@#$%^&*()_+]+)*(?:\/[a-zA-Z\d!@#$%^&*()_+]+)*(?:\/[a-zA-Z\d!@#$%^&*()_+]+)*(?:#[a-zA-Z\d!@#$%^&*()_+]*)?$",
-                message="Добавьте ссылку на любую платформу, где размещено ваше портфолио",
-            )
+            URLValidator(message="Введите корректный URL"),
+            MinLengthValidator(limit_value=MIN_LENGTH_PORTFOLIO),
         ],
     )
     phone_number = models.TextField(
@@ -93,24 +104,22 @@ class Profile(models.Model):
             RegexValidator(
                 regex=r"^[a-zA-Z0-9_]+$",
                 message="Некорректный формат введенных данных",
-            )
+            ),
+            MinLengthValidator(limit_value=MIN_LENGTH_TELEGRAM),
         ],
     )
     email = models.EmailField(
         verbose_name="E-mail",
         max_length=MAX_LENGTH_EMAIL,
         validators=[
-            RegexValidator(
-                regex=r"^^(?![-._])[a-zA-Z0-9.-_](?![-._])[a-zA-Z0-9._%+-]{0,63}@(?![.-])[a-zA-Z0-9.-](?<![-.])\.[a-zA-Z]{2,63}(?<![-.])$",
-                message="Некорректный формат введенных данных",
-            )
+            MinLengthValidator(limit_value=MIN_LENGTH_EMAIL),
+            EmailValidator(message="Введите корректный e-mail"),
         ],
     )
     birthday = models.DateField(
         verbose_name="Дата рождения",
         blank=False,
-        null=False,
-        validators=[AgeValidator],
+        validators=[BirthdayValidator],
     )
     country = models.CharField(
         verbose_name="Страна", max_length=MAX_LENGTH_COUNTRY
@@ -119,7 +128,6 @@ class Profile(models.Model):
     specialization = models.ForeignKey(
         UserSpecialization,
         verbose_name="Специальность",
-        null=False,
         on_delete=models.CASCADE,
     )
     skill = models.ForeignKey(
@@ -132,26 +140,9 @@ class Profile(models.Model):
     ready_to_participate = models.BooleanField(
         verbose_name="Готовность к участию в проектах", choices=BOOL_CHOICES
     )
-    user = models.ForeignKey(
+    user = models.OneToOneField(
         User, verbose_name="Пользователь", on_delete=models.CASCADE
     )
-
-    def clean(self):
-        super().clean()
-
-        validator_name = MinLengthValidator(min_length=MIN_LENGTH_NAME)
-        validator_name.validate(self.name)
-
-        validator_about = MinLengthValidator(min_length=MIN_LENGTH_ABOUT)
-        validator_about.validate(self.about)
-
-        validator_portfolio = MinLengthValidator(
-            min_length=MIN_LENGTH_PORTFOLIO
-        )
-        validator_portfolio.validate(self.portfolio_link)
-
-        validator_telegram = MinLengthValidator(min_length=MIN_LENGTH_TELEGRAM)
-        validator_telegram.validate(self.telegram)
-
-        validator_email = MinLengthValidator(min_length=MIN_LENGTH_EMAIL)
-        validator_email.validate(self.email)
+    visibile_status = models.PositiveSmallIntegerField(
+        verbose_name="Видимость", choices=VISIBLE_CHOICES, default=1
+    )

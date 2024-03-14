@@ -12,3 +12,26 @@ class ProfileView(generics.RetrieveAPIView):
     queryset = Profile.objects.all()
     serializer_class = ProfileUpdateSerializer
     permisssion_classes = IsOwnerOrReadOnly
+
+
+class ProfileListAPIView(generics.ListAPIView):
+    """Список профилей в зависимости от их видимости"""
+
+    serializer_class = ProfileUpdateSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        visibile_status = self.request.query_params.get(
+            "visibile_status", "all"
+        )
+        if visibile_status == "all":
+            queryset = Profile.objects.all()
+        elif visibile_status == "creator":
+            queryset = Profile.objects.filter(
+                visibility="creator"
+            )  # Выводится в списке, если стоит видимость всем или организаторам проекта
+        else:
+            queryset = (
+                Profile.objects.none()
+            )  # Пустой queryset, если не выбраны организаторы
+        return queryset

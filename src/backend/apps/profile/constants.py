@@ -12,3 +12,8 @@ MIN_LENGTH_ABOUT = 50
 MIN_LENGTH_PORTFOLIO = 5
 MIN_LENGTH_TELEGRAM = 5
 MIN_LENGTH_EMAIL = 5
+VISIBLE_CHOICES = [
+    (1, "All"),
+    (2, "Only creator"),
+    (3, "Nobody"),
+]
