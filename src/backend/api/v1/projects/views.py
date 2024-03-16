@@ -1,49 +1,89 @@
 from django.db.models import Prefetch
 from rest_framework import mixins
-from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly
-from rest_framework.viewsets import GenericViewSet, ModelViewSet
+from rest_framework.permissions import (
+    SAFE_METHODS,
+    AllowAny,
+    IsAuthenticated,
+    IsAuthenticatedOrReadOnly,
+)
+from rest_framework.viewsets import (
+    GenericViewSet,
+    ModelViewSet,
+    ReadOnlyModelViewSet,
+)
 
-from apps.general.models import Skill
-from apps.project.models import Project, ProjectSpecialist
+from api.v1.projects.paginations import (
+    ProjectPagination,
+    ProjectPreviewMainPagination,
+)
+from api.v1.projects.serializers import (
+    DirectionSerializer,
+    ProjectPreviewMainSerializer,
+    ReadProjectSerializer,
+    WriteProjectSerializer,
+)
+from apps.projects.models import Direction, Project, ProjectSpecialist
 
-from .constants import PROJECT_PREVIEW_MAIN_FIELDS
-from .paginations import ProjectPagination, ProjectPreviewMainPagination
-from .serializers import ProjectPreviewMainSerializer, ProjectSerializer
+
+class DirectionViewSet(ReadOnlyModelViewSet):
+    """Представление направлений разработки."""
+
+    queryset = Direction.objects.all()
+    serializer_class = DirectionSerializer
+    permission_classes = (IsAuthenticated,)
 
 
 class ProjectViewSet(ModelViewSet):
     """Представление проектов."""
 
-    queryset = (
-        Project.objects.all()
-        .select_related("creator", "owner")
-        .prefetch_related(
-            Prefetch(
-                "project_specialists",
-                queryset=ProjectSpecialist.objects.select_related(
-                    "specialist__specialization"
-                ).prefetch_related("skills"),
-            ),
-        )
+    queryset = Project.objects.select_related(
+        "creator", "owner"
+    ).prefetch_related(
+        Prefetch(
+            "project_specialists",
+            queryset=ProjectSpecialist.objects.select_related(
+                "specialist"
+            ).prefetch_related("skills"),
+        ),
+        "directions",
     )
     permission_classes = (IsAuthenticatedOrReadOnly,)
-    serializer_class = ProjectSerializer
     pagination_class = ProjectPagination
+
+    def get_serializer_class(self):
+        """Метод получения сериализатора проектов."""
+
+        if self.request.method in SAFE_METHODS:
+            return ReadProjectSerializer
+        return WriteProjectSerializer
+
+    def perform_create(self, serializer):
+        """Метод предварительного создания объекта."""
+
+        user = self.request.user
+        serializer.save(creator=user, owner=user)
 
 
 class ProjectPreviewMainViewSet(mixins.ListModelMixin, GenericViewSet):
     """Представление превью проектов на главной странице."""
 
     queryset = (
-        Project.objects.all()
-        .only(*PROJECT_PREVIEW_MAIN_FIELDS)
+        Project.objects.exclude(status=Project.DRAFT)
+        .only(
+            "id",
+            "name",
+            "started",
+            "ended",
+            "directions",
+        )
         .prefetch_related(
             Prefetch(
                 "project_specialists",
                 queryset=ProjectSpecialist.objects.select_related(
-                    "specialist__specialization"
+                    "specialist"
                 ),
-            )
+            ),
+            "directions",
         )
     )
     permission_classes = (AllowAny,)
