@@ -54,7 +54,7 @@ services:
       - "443:443"
     volumes:
       - static_volume:/staticfiles/
-      - media_value:/var/html/media/
+      - media_value:/mediafiles/
       - certbot:/certbot/
       - letsencrypt:/letsencrypt/
     restart: unless-stopped
@@ -65,8 +65,8 @@ services:
   certbot:
     image: certbot/certbot
     volumes:
-      - certbot:/certbot/
-      - letsencrypt:/letsencrypt/
+      - certbot:/var/www/certbot/
+      - letsencrypt:/etc/letsencrypt/
     restart: unless-stopped
     depends_on:
       - backend
