@@ -1,36 +1,46 @@
 from rest_framework import generics, serializers
 
 from apps.profile.models import Profile, UserSkill
+from apps.projects.models import Project
 
 
 class ProfileUpdateSerializer(serializers.ModelSerializer):
+    """Модель сериализатора профиля с учетом выбора видимости контактов"""
+
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
         model = Profile
-        fields = "__all__"
+        fields = [
+            "avatar",
+            "name",
+            "about",
+            "portfolio_link",
+            "birthday",
+            "country",
+            "city",
+            "specialization",
+            "skill",
+            "level",
+            "ready_to_participate",
+        ]
 
     def to_representation(self, instance):
         user = self.context["request"].user
-        visibile_status = instance.visible_choices
-
-        representation = {}
+        visible_status_contacts = instance.visible_status_contacts
 
         if user.is_authenticated:
-            if visibile_status == "all":
-                representation["email"] = instance.email
-                representation["telegram"] = instance.telegram
-                representation["phone_number"] = instance.phone_number
-            elif visibile_status == "only_creator" and instance.user == user:
-                representation["email"] = instance.email
-                representation["telegram"] = instance.telegram
-                representation["phone_number"] = instance.phone_number
-            else:
-                representation["message"] = "Недоступно"
-        else:
-            representation["message"] = "Недоступно"
-
-        return representation
+            if (
+                visible_status_contacts == 2
+                and Project.objects.filter(creator=user).exists()
+            ):
+                return super().to_representation(instance)
+            if visible_status_contacts == 3:
+                self.fields.pop("phone_number")
+                self.fields.pop("email")
+                self.fields.pop("telegram")
+                return super().to_representation(instance)
+        return {}
 
 
 class UserSkillSerializer(serializers.ModelSerializer):

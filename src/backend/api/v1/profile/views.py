@@ -1,9 +1,10 @@
-from rest_framework import generics, status
-from rest_framework.response import Response
+from django.db.models import Q
+from rest_framework import generics
 
 from api.v1.profile.permissions import IsOwnerOrReadOnly
 from api.v1.profile.serializers import ProfileUpdateSerializer
 from apps.profile.models import Profile
+from apps.projects.models import Project
 
 
 class ProfileView(generics.RetrieveAPIView):
@@ -21,17 +22,23 @@ class ProfileListAPIView(generics.ListAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        visibile_status = self.request.query_params.get(
-            "visibile_status", "all"
+        visible_status = self.request.query_params.get("visible_status", "All")
+        is_organizer = (
+            user.is_authenticated
+            and Project.objects.filter(creator=user).exists()
         )
-        if visibile_status == "all":
-            queryset = Profile.objects.all()
-        elif visibile_status == "creator":
-            queryset = Profile.objects.filter(
-                visibility="creator"
-            )  # Выводится в списке, если стоит видимость всем или организаторам проекта
+
+        if visible_status == "Only creator" and user.is_authenticated:
+            # Проверяем, является ли пользователь организатором каких-либо проектов
+            if is_organizer:
+                queryset = Profile.objects.filter(
+                    visible_status__in=["All", "Only creator"]
+                )
+            else:
+                queryset = Profile.objects.filter(
+                    visible_status="all"
+                )  # Если пользователь не организатор, возвращаем только то, что видно всем
         else:
-            queryset = (
-                Profile.objects.none()
-            )  # Пустой queryset, если не выбраны организаторы
+            queryset = Profile.objects.filter(visible_status="All")
+
         return queryset

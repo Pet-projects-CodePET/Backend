@@ -1,31 +1,29 @@
 from django.core.validators import (
-    EmailValidator,
     MinLengthValidator,
     RegexValidator,
     URLValidator,
 )
 from django.db import models
 
-from apps.general.constants import LEVEL_CHOICES
-from apps.general.models import Skill, Specialization
+from apps.general.models import ContactsFields, Skill, Specialist
 from apps.profile.constants import (
     BOOL_CHOICES,
+    LEVEL_CHOICES,
     MAX_LENGTH_ABOUT,
     MAX_LENGTH_CITY,
     MAX_LENGTH_COUNTRY,
-    MAX_LENGTH_EMAIL,
     MAX_LENGTH_NAME,
-    MAX_LENGTH_PHONE_NUMBER,
-    MAX_LENGTH_TELEGRAM,
     MAX_LENGTH_URL,
     MIN_LENGTH_ABOUT,
-    MIN_LENGTH_EMAIL,
     MIN_LENGTH_NAME,
     MIN_LENGTH_PORTFOLIO,
-    MIN_LENGTH_TELEGRAM,
     VISIBLE_CHOICES,
 )
-from apps.profile.validators import BirthdayValidator, validate_image
+from apps.profile.validators import (
+    BirthdayValidator,
+    validate_image,
+    visibility_correspondence,
+)
 from apps.users.models import User
 
 
@@ -40,12 +38,10 @@ class UserSpecialization(models.Model):
     """Модель специализации пользователя"""
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    specialization = models.ForeignKey(
-        Specialization, on_delete=models.CASCADE
-    )
+    specialization = models.ForeignKey(Specialist, on_delete=models.CASCADE)
 
 
-class Profile(models.Model):
+class Profile(ContactsFields, models.Model):
     """Модель профиля пользователя"""
 
     avatar = models.ImageField(
@@ -87,35 +83,7 @@ class Profile(models.Model):
             MinLengthValidator(limit_value=MIN_LENGTH_PORTFOLIO),
         ],
     )
-    phone_number = models.TextField(
-        max_length=MAX_LENGTH_PHONE_NUMBER,
-        verbose_name="Номер телефона",
-        validators=[
-            RegexValidator(
-                regex=r"^\+7\(\d{3}\)\d{3}-\d{2}-\d{2}$",
-                message="Телефон может содержать: цифры, спецсимволы, длина не должна превышать 12 символов",
-            )
-        ],
-    )
-    telegram = models.CharField(
-        max_length=MAX_LENGTH_TELEGRAM,
-        verbose_name="Ник в телеграме",
-        validators=[
-            RegexValidator(
-                regex=r"^[a-zA-Z0-9_]+$",
-                message="Некорректный формат введенных данных",
-            ),
-            MinLengthValidator(limit_value=MIN_LENGTH_TELEGRAM),
-        ],
-    )
-    email = models.EmailField(
-        verbose_name="E-mail",
-        max_length=MAX_LENGTH_EMAIL,
-        validators=[
-            MinLengthValidator(limit_value=MIN_LENGTH_EMAIL),
-            EmailValidator(message="Введите корректный e-mail"),
-        ],
-    )
+
     birthday = models.DateField(
         verbose_name="Дата рождения",
         blank=False,
@@ -138,11 +106,19 @@ class Profile(models.Model):
         choices=LEVEL_CHOICES,
     )
     ready_to_participate = models.BooleanField(
-        verbose_name="Готовность к участию в проектах", choices=BOOL_CHOICES
-    )
+        verbose_name="Готовность к участию в проектах",
+        choices=BOOL_CHOICES,
+        default=False,
+    )  # готовность к участию в проектах по умолчанию отключена
     user = models.OneToOneField(
         User, verbose_name="Пользователь", on_delete=models.CASCADE
     )
     visibile_status = models.PositiveSmallIntegerField(
-        verbose_name="Видимость", choices=VISIBLE_CHOICES, default=1
+        verbose_name="Видимость", choices=VISIBLE_CHOICES, default="All"
+    )
+    visible_status_contacts = models.PositiveSmallIntegerField(
+        verbose_name="Видимость контактов",
+        choices=VISIBLE_CHOICES,
+        default=3,
+        validators=[visibility_correspondence],
     )
