@@ -127,5 +127,6 @@ jobs:
           sudo docker compose -f docker-compose-prod.yaml exec backend python manage.py migrate
           sudo docker compose -f docker-compose-prod.yaml exec backend python manage.py collectstatic --no-input
           sudo docker compose -f docker-compose-prod.yaml exec backend cp -r static/. /backend_static/static/
-          sudo docker compose -f docker-compose-prod.yaml exec certbot certbot certonly --standalone -d devcodepet.tw1.ru
+          sudo docker compose -f docker-compose-prod.yaml run --rm certbot certonly --webroot --webroot-path /var/www/certbot/ -d devcodepet.tw1.ru
+          sudo docker compose -f docker-compose-prod.yaml run --rm certbot renew
           sudo docker system prune -f
