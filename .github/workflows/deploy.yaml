@@ -26,7 +26,7 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROJECT_NAME }}_backend:latest
 
   build_and_push_to_docker_hub_nginx:
-    name: Push gateway Docker image to DockerHub
+    name: Push nginx Docker image to DockerHub
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repo
@@ -46,7 +46,7 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROJECT_NAME }}_nginx:latest
 
   build_and_push_to_docker_hub_certbot:
-    name: Push gateway Docker image to DockerHub
+    name: Push certbot Docker image to DockerHub
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repo
@@ -127,4 +127,5 @@ jobs:
           sudo docker compose -f docker-compose-prod.yaml exec backend python manage.py migrate
           sudo docker compose -f docker-compose-prod.yaml exec backend python manage.py collectstatic --no-input
           sudo docker compose -f docker-compose-prod.yaml exec backend cp -r static/. /backend_static/static/
+          sudo docker compose -f docker-compose-prod.yaml exec certbot certbot certonly --standalone -d devcodepet.tw1.ru
           sudo docker system prune -f
