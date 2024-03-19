@@ -63,7 +63,7 @@ services:
       - frontend
 
   certbot:
-    image: certbot/certbot
+    image: ${DOCKERHUB_USERNAME}/${PROJECT_NAME}_certbot:latest
     volumes:
       - certbot:/var/www/certbot/
       - letsencrypt:/etc/letsencrypt/
