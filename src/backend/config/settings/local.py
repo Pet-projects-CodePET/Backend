@@ -15,11 +15,11 @@ else:
             "ENGINE": getenv(
                 "DB_ENGINE", default="django.db.backends.postgresql"
             ),
-            "NAME": getenv("DB_NAME", default="test"),
-            "USER": getenv("POSTGRES_USER", default="test_user"),
-            "PASSWORD": getenv("POSTGRES_PASSWORD", default="test_password"),
-            "HOST": getenv("DB_HOST", default="db"),
-            "PORT": getenv("DB_PORT", default=5432),
+            "NAME": getenv("POSTGRES_DB", default="db_test"),
+            "USER": getenv("POSTGRES_USER", default="admin_test"),
+            "PASSWORD": getenv("POSTGRES_PASSWORD", default="postgre_admin"),
+            "HOST": getenv("POSTGRES_HOST", default="db_test"),
+            "PORT": getenv("POSTGRES_PORT", default=5432),
         }
     }
 
@@ -55,3 +55,8 @@ LOGGING = {
         },
     },
 }
+
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+]

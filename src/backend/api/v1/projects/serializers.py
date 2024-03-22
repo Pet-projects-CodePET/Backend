@@ -1,33 +1,25 @@
+from datetime import date
+from typing import Any, Dict, List, Optional
+
+from django.db import transaction
 from rest_framework import serializers
 
-from api.v1.general.serializers import (
-    SkillSerializer,
-    SpecializationSerializer,
-)
-from apps.project.models import (
-    Project,
-    ProjectSpecialist,
-    Specialist,
-    Specialization,
-)
+from api.v1.general.serializers import SkillSerializer, SpecialistSerializer
+from apps.projects.constants import BUSYNESS_CHOICES, STATUS_CHOICES
+from apps.projects.mixins import RecruitmentStatusMixin
+from apps.projects.models import Direction, Project, ProjectSpecialist
 
 
-class SpecialistSerializer(serializers.ModelSerializer):
-    """Сериализатор специалистов."""
-
-    specialization = SpecializationSerializer()
+class DirectionSerializer(serializers.ModelSerializer):
+    """Сериализатор специалиста."""
 
     class Meta:
-        model = Specialist
-        fields = (
-            "id",
-            "name",
-            "specialization",
-        )
+        model = Direction
+        fields = "__all__"
 
 
-class ProjectSpecialistSerializer(SpecialistSerializer):
-    """Сериализатор специалистов необходимых проекту."""
+class ReadProjectSpecialistSerializer(SpecialistSerializer):
+    """Сериализатор для чтения специалиста необходимого проекту."""
 
     specialist = SpecialistSerializer()
     skills = SkillSerializer(many=True)
@@ -36,6 +28,7 @@ class ProjectSpecialistSerializer(SpecialistSerializer):
     class Meta:
         model = ProjectSpecialist
         fields = (
+            "id",
             "specialist",
             "skills",
             "count",
@@ -44,21 +37,41 @@ class ProjectSpecialistSerializer(SpecialistSerializer):
         )
 
     def get_level(self, obj) -> str:
+        """Метод получения представления для грейда."""
+
         return obj.get_level_display()
 
 
-class ProjectSerializer(serializers.ModelSerializer):
-    """Сериализатор проектов."""
+class WriteProjectSpecialistSerializer(SpecialistSerializer):
+    """Сериализатор для записи специалиста необходимого проекту."""
 
-    project_specialists = ProjectSpecialistSerializer(many=True)
-    direction = serializers.SerializerMethodField()
-    status = serializers.SerializerMethodField()
+    class Meta:
+        model = ProjectSpecialist
+        fields = (
+            "id",
+            "specialist",
+            "skills",
+            "count",
+            "level",
+            "is_required",
+        )
 
-    def get_direction(self, obj) -> str:
-        return obj.get_direction_display()
 
-    def get_status(self, obj) -> str:
-        return obj.get_status_display()
+class ReadProjectSerializer(
+    RecruitmentStatusMixin, serializers.ModelSerializer
+):
+    """Сериализатор для чтения проектов."""
+
+    directions = serializers.StringRelatedField(many=True)
+    status = serializers.ChoiceField(
+        choices=STATUS_CHOICES, source="get_status_display"
+    )
+    recruitment_status = serializers.SerializerMethodField()
+    project_specialists = ReadProjectSpecialistSerializer(many=True)
+    creator = serializers.SlugRelatedField(
+        slug_field="username", read_only=True
+    )
+    owner = serializers.SlugRelatedField(slug_field="username", read_only=True)
 
     class Meta:
         model = Project
@@ -68,26 +81,173 @@ class ProjectSerializer(serializers.ModelSerializer):
             "description",
             "started",
             "ended",
-            "direction",
+            "directions",
             "creator",
             "owner",
+            "link",
+            "recruitment_status",
             "project_specialists",
             "status",
         )
+        read_only_fields = fields
+
+    def get_recruitment_status(self, obj) -> str:
+        """Метод определения статуса набора в проект."""
+
+        return self.calculate_recruitment_status(obj)
+
+
+class WriteProjectSerializer(
+    RecruitmentStatusMixin, serializers.ModelSerializer
+):
+    """Сериализатор для записи проектов."""
+
+    creator = serializers.SerializerMethodField(read_only=True)
+    owner = serializers.SerializerMethodField(read_only=True)
+    project_specialists = WriteProjectSpecialistSerializer(
+        many=True,
+    )
+    busyness = serializers.ChoiceField(
+        choices=BUSYNESS_CHOICES, write_only=True
+    )
+    project_busyness = serializers.ChoiceField(
+        choices=BUSYNESS_CHOICES,
+        source="get_busyness_display",
+        read_only=True,
+    )
+    status = serializers.ChoiceField(choices=STATUS_CHOICES, write_only=True)
+    project_status = serializers.ChoiceField(
+        choices=STATUS_CHOICES,
+        source="get_status_display",
+        read_only=True,
+    )
+    recruitment_status = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Project
+        fields = (
+            "id",
+            "name",
+            "description",
+            "started",
+            "ended",
+            "busyness",
+            "project_busyness",
+            "directions",
+            "creator",
+            "owner",
+            "link",
+            "recruitment_status",
+            "project_specialists",
+            "status",
+            "project_status",
+        )
+        extra_kwargs = {
+            "description": {"required": True},
+            "started": {"required": True},
+            "ended": {"required": True},
+            "busyness": {"required": True},
+            "directions": {"required": True},
+            "link": {"required": True},
+        }
+
+    def get_creator(self, obj) -> str:
+        """Метод получения username у создателя проекта."""
+
+        return obj.creator.username
+
+    def get_owner(self, obj) -> str:
+        """Метод получения username у владельца проекта."""
+
+        return obj.owner.username
+
+    def get_recruitment_status(self, obj) -> str:
+        """Метод определения статуса набора в проект."""
+
+        return self.calculate_recruitment_status(obj)
+
+    def _validate_date(self, value, field_name) -> date:
+        """Метод валидации даты."""
+
+        if value < date.today():
+            raise serializers.ValidationError(
+                f"Дата {field_name} не может быть в прошлом."
+            )
+        return value
+
+    def validate_started(self, value) -> date:
+        """Метод валидации даты начала проекта."""
+
+        return self._validate_date(value, "начала проекта")
+
+    def validate_ended(self, value) -> date:
+        """Метод валидации даты завершения проекта."""
+
+        return self._validate_date(value, "завершения проекта")
+
+    def validate_status(self, value) -> int:
+        """Метод валидации даты завершения проекта."""
+
+        if value == Project.DRAFT:
+            raise serializers.ValidationError(
+                "У проекта не может быть статуса 'Черновик'."
+            )
+        return value
+
+    def validate(self, attrs) -> Dict[str, Any]:
+        """Метод валидации данных о проекте."""
+
+        errors: Dict = {}
+
+        queryset = Project.objects.filter(
+            name=attrs.get("name"),
+            creator=self.context.get("request").user,
+            owner=self.context.get("request").user,
+        )
+
+        if queryset.exists():
+            errors.setdefault("unique", []).append(
+                "У вас уже есть проект с таким названием."
+            )
+        if attrs.get("started") > attrs.get("ended"):
+            errors.setdefault("invalid_dates", []).append(
+                "Дата завершения проекта не может быть раньше даты начала."
+            )
+
+        if errors:
+            raise serializers.ValidationError(errors)
+        return attrs
+
+    def create(self, validated_data) -> Project:
+        """Метод создания проекта."""
+
+        directions = validated_data.pop("directions")
+        project_specialists = validated_data.pop("project_specialists")
+        with transaction.atomic():
+            project_instance, _ = Project.objects.get_or_create(
+                **validated_data
+            )
+            project_instance.directions.set(directions)
+            for project_specialist_data in project_specialists:
+                skills_data = project_specialist_data.pop("skills")
+                project_specialist_instance = ProjectSpecialist.objects.create(
+                    project=project_instance, **project_specialist_data
+                )
+                project_specialist_instance.skills.set(skills_data)
+        return project_instance
 
 
 class ProjectPreviewMainSerializer(serializers.ModelSerializer):
     """Сериализатор превью проектов."""
 
-    specializations = serializers.SerializerMethodField()
-    direction = serializers.SerializerMethodField()
+    specialists = serializers.SerializerMethodField()
+    directions = serializers.StringRelatedField(many=True)
 
-    def get_direction(self, obj) -> str:
-        return obj.get_direction_display()
+    def get_specialists(self, obj) -> Optional[List[Dict[str, Any]]]:
+        """Метод получения списка специалистов."""
 
-    def get_specializations(self, obj) -> list[str]:
         return [
-            specialist.specialist.specialization.name
+            SpecialistSerializer(specialist.specialist).data
             for specialist in obj.project_specialists.all()
         ]
 
@@ -98,6 +258,6 @@ class ProjectPreviewMainSerializer(serializers.ModelSerializer):
             "name",
             "started",
             "ended",
-            "direction",
-            "specializations",
+            "directions",
+            "specialists",
         )

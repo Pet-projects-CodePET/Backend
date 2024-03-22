@@ -1,0 +1,23 @@
+[
+    {
+        "model": "projects.direction",
+        "pk": 1,
+        "fields": {
+            "name": "Десктоп"
+        }
+    },
+    {
+        "model": "projects.direction",
+        "pk": 2,
+        "fields": {
+            "name": "Веб"
+        }
+    },
+    {
+        "model": "projects.direction",
+        "pk": 3,
+        "fields": {
+            "name": "Мобильная"
+        }
+    }
+]
