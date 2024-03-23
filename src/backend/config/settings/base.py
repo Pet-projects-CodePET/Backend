@@ -197,3 +197,83 @@ SPECTACULAR_SETTINGS = {
     },
     "COMPONENT_SPLIT_REQUEST": True,
 }
+
+
+# Логирование для любого уровня разработки:
+
+LOGGING_MODULE = getenv("DJANGO_SETTINGS_MODULE", "config.settings.prod")
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "main_format": {
+            "format": "%(asctime)s - %(levelname)s - %(name)s - %(module)s - %(message)s",
+        },
+        "simple_format": {
+            "format": "%(asctime)s - %(levelname)s - %(message)s"
+        },
+    },
+    "handlers": {
+        "file": {
+            "level": "INFO",
+            "class": "logging.FileHandler",
+            "filename": "./data/logs/main.log",
+            "formatter": "main_format",
+        },
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "simple_format",
+        },
+        "mail_admins": {
+            "level": "ERROR",
+            "class": "django.utils.log.AdminEmailHandler",
+            "formatter": "main_format",
+            "email_backend": "django.core.mail.backends.filebased.EmailBackend",
+        },  # обработчик отправки емайл сообщений администрации сервера
+    },
+    "loggers": {
+        "django": {
+            "level": "DEBUG",
+            "handlers": [
+                "console",
+            ],
+            "propagate": True,
+        },
+        "django.request": {
+            "level": "DEBUG",
+            "handlers": [
+                "file",
+            ],
+            "propagate": True,
+        },
+        "django.db.backends": {
+            "level": "DEBUG",
+            "handlers": [
+                "console",
+            ],
+            "propagate": True,
+        },
+        "django.security": {
+            "level": "DEBUG",
+            "handlers": [
+                "file",
+            ],
+            "propagate": True,
+        },
+        "django.security.csrf": {
+            "level": "DEBUG",
+            "handlers": [
+                "file",
+            ],
+            "propagate": True,
+        },
+        "customlogger": {
+            "level": "DEBUG",
+            "handlers": [
+                "mail_admins",
+            ],
+        },  # если нужно отправлять какие-то очень важные сообщения
+    },
+}
