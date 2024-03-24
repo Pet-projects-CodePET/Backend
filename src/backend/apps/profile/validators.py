@@ -58,18 +58,3 @@ def validate_image(value):
     validate_image_format(value)
     validate_image_size(value)
     validate_image_resolution(value)
-
-    # Проверяем соотвествие видимости общего профиля - видимости контактов
-
-
-def visibility_correspondence(value, profile):
-    if profile.visibile_status == 2 or profile.visibile_status == 3:
-        if value != 2 and value != 3:
-            raise ValidationError(
-                "Видимость контактов не должна противоречить видимости профиля"
-            )
-    elif profile.visibile_status == 3:
-        if value != 3:
-            raise ValidationError(
-                "Видимость контактов не должна противоречить видимости профиля"
-            )

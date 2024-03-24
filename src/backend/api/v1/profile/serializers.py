@@ -1,60 +1,69 @@
 from rest_framework import generics, serializers
 
-from apps.profile.models import Profile, UserSkill
-from apps.projects.models import Project
+from apps.profile.models import Profile, UserSkill, UserSpecialization
+from apps.projects.models import Skill, Specialist
+
+
+class ProfileSerializer(serializers.Serializer):
+    """Модель сериализатора на просмотр профиля с учетом выбора видимости контактов"""
+
+    class Meta:
+        model = Profile
+        fields = "__all__"
+
+    def to_representation(self, instance):
+        user = self.context["request"].user
+        visible_status_contacts = instance.visible_status_contacts
+        if visible_status_contacts in [Profile.NOBODY] or (
+            not user.is_organizer
+            and visible_status_contacts in [Profile.CREATOR_ONLY]
+        ):
+            self.fields.pop("phone_number")
+            self.fields.pop("email")
+            self.fields.pop("telegram")
+
+        return super().to_representation(instance)
 
 
 class ProfileUpdateSerializer(serializers.ModelSerializer):
-    """Модель сериализатора профиля с учетом выбора видимости контактов"""
+    """Сериализатор на редактирование профиля пользователя."""
 
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
         model = Profile
-        fields = [
-            "avatar",
-            "name",
-            "about",
-            "portfolio_link",
-            "birthday",
-            "country",
-            "city",
-            "specialization",
-            "skill",
-            "level",
-            "ready_to_participate",
-        ]
-
-    def to_representation(self, instance):
-        user = self.context["request"].user
-        visible_status_contacts = instance.visible_status_contacts
-
-        if user.is_authenticated:
-            if (
-                visible_status_contacts == 2
-                and Project.objects.filter(creator=user).exists()
-            ):
-                return super().to_representation(instance)
-            if visible_status_contacts == 3:
-                self.fields.pop("phone_number")
-                self.fields.pop("email")
-                self.fields.pop("telegram")
-                return super().to_representation(instance)
-        return {}
+        fields = "__all__"
 
 
 class UserSkillSerializer(serializers.ModelSerializer):
     skills = serializers.PrimaryKeyRelatedField(
-        queryset=UserSkill.objects.all(), many=True
+        queryset=Skill.objects.all(), many=True
     )
 
     class Meta:
-        model = Profile
+        model = UserSkill
         fields = ["user", "skill"]
         validators = [
             serializers.UniqueTogetherValidator(
-                queryset=Profile.objects.all(),
+                queryset=UserSkill.objects.all(),
                 fields=["user", "skill"],
                 message="Этот навык вами уже был выбран",
+            )
+        ]
+
+
+class UserSpecializationSerializer(serializers.ModelSerializer):
+    specialization = serializers.PrimaryKeyRelatedField(
+        queryset=Specialist.objects.all(), many=True
+    )
+
+    class Meta:
+        model = UserSpecialization
+        fields = ["user", "specialization"]
+        validators = [
+            serializers.UniqueTogetherValidator(
+                queryset=UserSpecialization.objects.all(),
+                fields=["user", "specialization"],
+                message="Этот специализация вами уже была выбрана",
             )
         ]

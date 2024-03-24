@@ -12,4 +12,3 @@ VISIBLE_CHOICES = [
     (2, "Only creator"),
     (3, "Nobody"),
 ]
-LEVEL_CHOICES = [(1, "Junior"), (2, "Middle"), (3, "Senior"), (4, "Lead")]

@@ -5,10 +5,10 @@ from django.core.validators import (
 )
 from django.db import models
 
+from apps.general.constants import LEVEL_CHOICES
 from apps.general.models import ContactsFields, Skill, Specialist
 from apps.profile.constants import (
     BOOL_CHOICES,
-    LEVEL_CHOICES,
     MAX_LENGTH_ABOUT,
     MAX_LENGTH_CITY,
     MAX_LENGTH_COUNTRY,
@@ -19,11 +19,7 @@ from apps.profile.constants import (
     MIN_LENGTH_PORTFOLIO,
     VISIBLE_CHOICES,
 )
-from apps.profile.validators import (
-    BirthdayValidator,
-    validate_image,
-    visibility_correspondence,
-)
+from apps.profile.validators import BirthdayValidator, validate_image
 from apps.users.models import User
 
 
@@ -33,6 +29,15 @@ class UserSkill(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     skill = models.ForeignKey(Skill, on_delete=models.CASCADE)
 
+    class Meta:
+        verbose_name = "Навык пользователя"
+        constraints = (
+            models.UniqueConstraint(
+                fields=("user", "skill"),
+                name=("%(app_label)s_%(class)s_unique_skill_per_user"),
+            ),
+        )
+
 
 class UserSpecialization(models.Model):
     """Модель специализации пользователя"""
@@ -40,9 +45,24 @@ class UserSpecialization(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     specialization = models.ForeignKey(Specialist, on_delete=models.CASCADE)
 
+    class Meta:
+        verbose_name = "Специализация пользователя"
+        constraints = (
+            models.UniqueConstraint(
+                fields=("user", "specialization"),
+                name=(
+                    "%(app_label)s_%(class)s_unique_specialization_per_user"
+                ),
+            ),
+        )
+
 
 class Profile(ContactsFields, models.Model):
     """Модель профиля пользователя"""
+
+    ALL = 1
+    CREATOR_ONLY = 2
+    NOBODY = 3
 
     avatar = models.ImageField(
         verbose_name="Аватар", upload_to="images/", validators=[validate_image]
@@ -93,14 +113,6 @@ class Profile(ContactsFields, models.Model):
         verbose_name="Страна", max_length=MAX_LENGTH_COUNTRY
     )
     city = models.CharField(verbose_name="Город", max_length=MAX_LENGTH_CITY)
-    specialization = models.ForeignKey(
-        UserSpecialization,
-        verbose_name="Специальность",
-        on_delete=models.CASCADE,
-    )
-    skill = models.ForeignKey(
-        UserSkill, verbose_name="Навыки", null=False, on_delete=models.CASCADE
-    )
     level = models.IntegerField(
         verbose_name="Уровень квалификации",
         choices=LEVEL_CHOICES,
@@ -120,5 +132,4 @@ class Profile(ContactsFields, models.Model):
         verbose_name="Видимость контактов",
         choices=VISIBLE_CHOICES,
         default=3,
-        validators=[visibility_correspondence],
     )
