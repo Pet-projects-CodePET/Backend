@@ -52,6 +52,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    env_file: .env
     volumes:
       - static_volume:/staticfiles/
       - media_value:/mediafiles/
@@ -64,6 +65,7 @@ services:
 
   certbot:
     image: ${DOCKERHUB_USERNAME}/${PROJECT_NAME}_certbot:latest
+    env_file: .env
     volumes:
       - certbot:/var/www/certbot/
       - letsencrypt:/etc/letsencrypt/

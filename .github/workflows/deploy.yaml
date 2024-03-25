@@ -43,6 +43,7 @@ jobs:
         with:
           context: ./infra/nginx/
           push: true
+          build-args: NGINX_NAME=${{ secrets.NGINX_DEV }}
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROJECT_NAME }}_nginx:latest
 
   build_and_push_to_docker_hub_certbot:
@@ -63,6 +64,7 @@ jobs:
         with:
           context: ./infra/certbot/
           push: true
+          build-args: DOMAIN_NAME=${{ secrets.DOMAIN_DEV }}
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROJECT_NAME }}_certbot:latest
 
   deploy:
@@ -97,6 +99,8 @@ jobs:
             DOCKERHUB_USERNAME_FRONT=${{ secrets.DOCKERHUB_USERNAME_FRONT }}
             DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}
             ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }}
+            NGINX_NAME=${{ secrets.NGINX_DEV }}
+            DOMAIN_NAME=${{ secrets.DOMAIN_DEV }}
             EMAIL_HOST=${{ secrets.EMAIL_HOST }}
             EMAIL_HOST_USER=${{ secrets.EMAIL_HOST_USER }}
             EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }}

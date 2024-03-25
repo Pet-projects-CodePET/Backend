@@ -1,5 +1,7 @@
 FROM certbot/certbot
 
-COPY fullchain.pem /letsencrypt/live/devcodepet.tw1.ru/fullchain.pem
+ARG DOMAIN_NAME
 
-COPY privkey.pem /letsencrypt/live/devcodepet.tw1.ru/privkey.pem
+COPY fullchain.pem letsencrypt/live/${DOMAIN_NAME}/fullchain.pem
+
+COPY privkey.pem letsencrypt/live/${DOMAIN_NAME}/privkey.pem
