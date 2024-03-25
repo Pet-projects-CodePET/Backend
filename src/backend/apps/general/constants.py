@@ -1,6 +1,6 @@
 MAX_LENGTH_SKILL_NAME = 100
 
-MAX_LENGTH_SPECIALIZATION_NAME = 50
+MAX_LENGTH_SPECIALIZATION_NAME = 100
 MIN_LENGTH_SPECIALIZATION_NAME = 2
 LENGTH_SPECIALIZATION_NAME_ERROR_TEXT = (
     f"Длина поля от {MIN_LENGTH_SPECIALIZATION_NAME} до "
@@ -12,7 +12,7 @@ REGEX_SPECIALIZATION_NAME_ERROR_TEXT = (
     "и символ /"
 )
 
-MAX_LENGTH_SPECIALTY_NAME = 100
+MAX_LENGTH_SPECIALTY_NAME = 50
 MIN_LENGTH_SPECIALTY_NAME = 2
 LENGTH_SPECIALTY_NAME_ERROR_TEXT = (
     f"Длина поля от {MIN_LENGTH_SPECIALTY_NAME} до "
@@ -46,4 +46,11 @@ REGEX_TELEGRAM_NICK = r"^[a-zA-Z0-9_]+$"
 REGEX_TELEGRAM_NICK_ERROR_TEXT = (
     "Введите корректное имя пользователя. Оно может состоять из латинских "
     "букв, цифр и символа подчеркивания."
+)
+LEVEL_CHOICES = (
+    (1, "intern"),
+    (2, "junior"),
+    (3, "middle"),
+    (4, "senior"),
+    (5, "lead"),
 )
