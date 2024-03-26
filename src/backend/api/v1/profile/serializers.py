@@ -1,11 +1,11 @@
-from rest_framework import generics, serializers
+from rest_framework import serializers
 
 from apps.profile.models import Profile, UserSkill, UserSpecialization
 from apps.projects.models import Skill, Specialist
 
 
 class ProfileSerializer(serializers.Serializer):
-    """Модель сериализатора на просмотр профиля с учетом выбора видимости контактов"""
+    """Сериализатор на просмотр профиля с учетом выбора видимости контактов."""
 
     class Meta:
         model = Profile
