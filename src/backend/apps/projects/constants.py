@@ -24,7 +24,10 @@ LENGTH_DIRECTION_NAME_ERROR_TEXT = (
     "символов."
 )
 REGEX_DIRECTION_NAME = r"(^[A-Za-zА-Яа-яЁё]+)\Z"
-REGEX_DIRECTION_NAME_ERROR_TEXT = "Направление разработки может содержать: кириллические и латинские символы."
+REGEX_DIRECTION_NAME_ERROR_TEXT = (
+    "Направление разработки может содержать: кириллические и латинские "
+    "символы."
+)
 
 MAX_LENGTH_LINK = 256
 MIN_LENGTH_LINK = 5
@@ -43,12 +46,6 @@ STATUS_CHOICES = (
     (2, "Завершен"),
     (3, "Черновик"),
 )
-LEVEL_CHOICES = (
-    (1, "intern"),
-    (2, "junior"),
-    (3, "middle"),
-    (4, "senior"),
-    (5, "lead"),
-)
+
 
 PROJECTS_PER_PAGE = 10
