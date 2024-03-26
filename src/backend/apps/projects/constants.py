@@ -24,7 +24,10 @@ LENGTH_DIRECTION_NAME_ERROR_TEXT = (
     "символов."
 )
 REGEX_DIRECTION_NAME = r"(^[A-Za-zА-Яа-яЁё]+)\Z"
-REGEX_DIRECTION_NAME_ERROR_TEXT = "Направление разработки может содержать: кириллические и латинские символы."
+REGEX_DIRECTION_NAME_ERROR_TEXT = (
+    "Направление разработки может содержать: кириллические и латинские "
+    "символы."
+)
 
 MAX_LENGTH_LINK = 256
 MIN_LENGTH_LINK = 5
