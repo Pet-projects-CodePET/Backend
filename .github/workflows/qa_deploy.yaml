@@ -63,6 +63,7 @@ jobs:
         with:
           context: ./infra/certbot/
           push: true
+          build-args: DOMAIN_NAME=${{ secrets.DOMAIN_QA }}
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROJECT_NAME }}_certbot:latest
 
   deploy:
