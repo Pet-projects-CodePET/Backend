@@ -43,6 +43,7 @@ jobs:
         with:
           context: ./infra/nginx/
           push: true
+          build-args: NGINX_NAME=${{ secrets.NGINX_QA }}
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROJECT_NAME }}_nginx:latest
 
   build_and_push_to_docker_hub_certbot:
