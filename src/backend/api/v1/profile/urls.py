@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import include, path
 
 from api.v1.profile.views import ProfileListAPIView, ProfileView
 

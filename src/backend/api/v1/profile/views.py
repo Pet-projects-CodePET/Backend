@@ -1,3 +1,4 @@
+from django.db.models import Q
 from rest_framework import generics
 
 from api.v1.profile.permissions import IsOwnerOrReadOnly
@@ -6,6 +7,7 @@ from api.v1.profile.serializers import (
     ProfileUpdateSerializer,
 )
 from apps.profile.models import Profile
+from apps.projects.models import Project
 
 
 class ProfileView(generics.UpdateAPIView):

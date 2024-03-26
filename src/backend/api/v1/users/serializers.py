@@ -1,8 +1,10 @@
 from django.contrib.auth import get_user_model
 from djoser.serializers import (
+    SendEmailResetSerializer,
     UserCreatePasswordRetypeSerializer,
     UserSerializer,
 )
+from rest_framework import serializers
 
 from api.v1.users import constants
 

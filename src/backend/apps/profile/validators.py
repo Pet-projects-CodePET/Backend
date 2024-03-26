@@ -1,14 +1,12 @@
 from datetime import date
 
 from django.core.exceptions import ValidationError
+from django.core.validators import RegexValidator
 from PIL import Image
 
 
 class BirthdayValidator:
-    """
-    Валидатор, не позволяющий пользователю добавить будущую дату в качестве
-    своего дня рождения.
-    """
+    """Валидатор, не позволяющий пользователю добавить будущую дату в качестве своего дня рождения"""
 
     def __init__(self, min_age=0):
         self.min_age = min_age
@@ -21,27 +19,24 @@ class BirthdayValidator:
 
 
 def validate_image_format(value):
-    """
-    Валидатор, позволяющий добавить аватар только определенного формата .png,
-    .jpg или .jpeg.
-    """
+    """Валидатор, позволяющий добавить аватар только определенного формата .png, .jpg или .jpeg"""
     valid_extensions = [".png", ".jpg", ".jpeg"]
     ext = value.name.lower().split(".")[-1]
-    if ext not in valid_extensions:
+    if not ext in valid_extensions:
         raise ValidationError(
             "Пожалуйста загрузите файл с расширением PNG или JPEG."
         )
 
 
 def validate_image_size(value):
-    """Валидатор, не позволяющий загрузить картинку размером больше 10 MB."""
+    """Валидатор, не позволяющий загрузить картинку размером больше 10 MB"""
     max_size = 10 * 1024 * 1024  # 10 MB
     if value.size > max_size:
         raise ValidationError("Файл не должен превышать размер 10 MB.")
 
 
 def validate_image_resolution(value):
-    """Валидатор, ограничивающий размер картинки."""
+    """Валидатор, ограничивающий размер картинки"""
     min_width, min_height = 320, 240
     max_width, max_height = 1920, 1080
 
