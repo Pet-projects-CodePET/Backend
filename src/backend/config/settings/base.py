@@ -39,7 +39,7 @@ THIRD_PARTY_APPS = [
 LOCAL_APPS: list = [
     "apps.general",
     "apps.users",
-    "apps.project",
+    "apps.projects",
     "apps.profile",
 ]
 
