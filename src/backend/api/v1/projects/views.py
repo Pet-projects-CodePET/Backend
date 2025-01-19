@@ -396,15 +396,16 @@ class ProjectParticipationRequestsViewSet(ModelViewSet):
     def get_serializer_class(self) -> type[BaseSerializer]:
         """Метод получения сериализатора для запросов на участие в проекте."""
         role = self.request.query_params.get("role")
-        if self.request.method in SAFE_METHODS:
-            if role == "owner":
-                return ReadListParticipationRequestSerializer
-            return MyRequestsSerializer
         if self.request.method in [
             "PATCH",
         ]:
             return UpdateParticipationRequestSerializer
-        return WriteParticipationRequestSerializer
+        if self.request.method in SAFE_METHODS:
+            if role == "owner":
+                return ReadListParticipationRequestSerializer
+            return MyRequestsSerializer
+        else:
+            return WriteParticipationRequestSerializer
 
     def perform_create(self, serializer) -> None:
         """
@@ -423,12 +424,16 @@ class ProjectParticipationRequestsViewSet(ModelViewSet):
         methods=["patch"],
         permission_classes=(IsProjectCreatorOrOwnerForParticipationRequest,),
         serializer_class=WriteParticipationRequestAnswerSerializer,
+        url_path=r"(?P<participant_user_id>\d+)",
     )
-    def answer(self, request, pk) -> Response:
+    def answer(self, request, pk, participant_user_id) -> Response:
         """Метод ответа на запрос на участие в проекте."""
-
-        participation_request = self.get_object()
-        serializer = self.get_serializer(
+        participation_request = get_object_or_404(
+            ParticipationRequest,
+            id=pk,
+            user=participant_user_id,
+        )
+        serializer = WriteParticipationRequestAnswerSerializer(
             instance=participation_request,
             data=request.data,
             context=self.get_serializer_context(),

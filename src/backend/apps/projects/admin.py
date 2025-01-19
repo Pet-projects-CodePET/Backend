@@ -6,6 +6,7 @@ from apps.projects.models import (
     ParticipationRequest,
     Profession,
     Project,
+    ProjectParticipant,
     ProjectSpecialist,
     Skill,
 )
@@ -127,4 +128,27 @@ class ParticipationRequestAdmin(admin.ModelAdmin):
     search_fields = (
         "project__name",
         "user__email",
+    )
+
+
+@admin.register(ProjectParticipant)
+class ProjectParticipantAdmin(admin.ModelAdmin):
+    def get_queryset(self, request):
+        """Метод получения queryset-а для участников проекта."""
+
+        return ProjectParticipant.objects.select_related(
+            "project",
+            "user",
+            "profession",
+        ).prefetch_related("skills")
+
+    list_display = (
+        "project",
+        "user",
+        "profession",
+    )
+    list_filter = ("project",)
+    search_fields = (
+        "user",
+        "project",
     )
