@@ -569,15 +569,22 @@ class ReadListParticipationRequestSerializer(
         ],
         source="user.profile",
     )
+    visible_status = serializers.IntegerField(
+        source="user.profile.visible_status"
+    )
+
+    participation_request_id = serializers.IntegerField(source="id")
 
     class Meta(BaseParticipationRequestSerializer.Meta):
         fields: ClassVar[Tuple[str, ...]] = (
+            "participation_request_id",
             *BaseParticipationRequestSerializer.Meta.fields,
             "request_participants",
             "request_status",
             "is_viewed",
             "cover_letter",
             "is_favorite_profile",
+            "visible_status",
         )
         read_only_fields = ("request_participants",)
 
