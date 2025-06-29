@@ -1,7 +1,7 @@
 from django.contrib.postgres.search import SearchQuery, SearchVector
 from django.db.models import Q
 from django_filters.rest_framework import FilterSet, filters
-from langdetect import detect
+from langdetect import detect, LangDetectException
 
 from apps.general.constants import LEVEL_CHOICES
 from apps.general.models import Profession, Skill
@@ -81,19 +81,31 @@ class ProjectFilter(FilterSet):
         return queryset
 
     def project_search(self, queryset, name, value):
-        if len(value) >= 3:
-            search_language = detect(value)
-            if search_language == "ru":
-                search_query = SearchQuery(value, config="russian")
-                vector = SearchVector("name", "description", config="russian")
-            elif search_language == "en":
-                search_query = SearchQuery(value, config="english")
-                vector = SearchVector("name", "description", config="english")
-            else:
-                search_query = SearchQuery(value)
-                vector = SearchVector("name", "description")
+        if len(value.strip()) < 3:
+            return queryset
+        try:
+            language = detect(value)
+        except LangDetectException:
+            language = None
+
+        if language == "ru":
+            config = "russian"
+        elif language == "en":
+            config = "english"
+        else:
+            config = "simple"
+
+        search_query = SearchQuery(value, config=config)
+        vector = SearchVector("name", "description", config=config)
+
+        # Выполняем полнотекстовый поиск
+        try:
             return queryset.annotate(search=vector).filter(search=search_query)
-        return queryset
+        except Exception:
+            # Fallback — поиск по icontains, если FTS сломался
+            return queryset.filter(
+                Q(name__icontains=value) | Q(description__icontains=value)
+            )
 
     def filter_is_favorite_project(self, queryset, name, value):
         user = self.request.user
