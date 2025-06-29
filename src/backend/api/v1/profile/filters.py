@@ -5,7 +5,7 @@ from apps.general.constants import LEVEL_CHOICES
 from apps.general.models import Profession, Skill
 from apps.profile.models import Profile
 
-SIMILARITY_CF: float = 0.3
+SIMILARITY_CF: float = 0.1
 
 
 class ProfileFilter(FilterSet):
