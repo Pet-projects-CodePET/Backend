@@ -67,23 +67,25 @@ class Profile(ContactsFields, models.Model):
                 message=MIN_LENGTH_NAME_MESSAGE,
             ),
         ],
-        blank=False,
+        blank=True,
+        null=True,
     )
     about = models.TextField(
         verbose_name="О себе",
         blank=True,
+        null=True,
         max_length=MAX_LENGTH_ABOUT,
         validators=[
             RegexValidator(
                 regex=REGEX_PROFILE_ABOUT,
                 message=REGEX_PROFILE_ABOUT_MESSAGE,
             ),
-            MinLengthValidator(limit_value=MIN_LENGTH_ABOUT),
         ],
     )
     portfolio_link = CustomURLField(
         verbose_name="Ссылка на портфолио",
         blank=True,
+        null=True,
         max_length=MAX_LENGTH_PORTFOLIO_URL,
         validators=[
             MinLengthValidator(
@@ -103,10 +105,16 @@ class Profile(ContactsFields, models.Model):
         blank=True,
     )
     country = models.CharField(
-        verbose_name="Страна", max_length=MAX_LENGTH_COUNTRY, blank=True
+        verbose_name="Страна",
+        max_length=MAX_LENGTH_COUNTRY,
+        blank=True,
+        null=True,
     )
     city = models.CharField(
-        verbose_name="Город", max_length=MAX_LENGTH_CITY, blank=True
+        verbose_name="Город",
+        max_length=MAX_LENGTH_CITY,
+        blank=True,
+        null=True,
     )
     ready_to_participate = models.BooleanField(
         verbose_name="Готов(а) к участию в проектах",
