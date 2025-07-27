@@ -269,14 +269,22 @@ class ProfileMeWriteSerializer(ProfileMeReadSerializer):
     )
 
     class Meta(ProfileMeReadSerializer.Meta):
-        read_only_fields = ("user_id", "specialists")
+        read_only_fields = ProfileMeReadSerializer.Meta.read_only_fields + ("user_id", "specialists")
 
     def validate_about(self, value):
         """
         Метод валидации и защиты от потенциально вредоносных
         HTML-тегов и атрибутов.
         """
+        if value is None:
+            return ""
         safe_about = cleaner.clean(
             value,
         )  # защита потенциально вредоносных HTML-тегов и атрибутов
         return safe_about
+
+    def update(self, instance, validated_data):
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        return instance
