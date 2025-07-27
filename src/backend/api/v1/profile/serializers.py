@@ -250,13 +250,12 @@ class ProfileMeReadSerializer(BaseProfileSerializer):
         rep["about"] = html.unescape(rep["about"]) if rep["about"] else ""
         return rep
 
-
-class ProfileMeWriteSerializer(ProfileMeReadSerializer):
+class ProfileMeWriteSerializer(serializers.ModelSerializer):
     """Сериализатор для обновления профиля его владельцем."""
 
     avatar = Base64ImageField(required=False, allow_null=True)
     username = serializers.CharField(
-        source="user__username",
+        source="user.username",
         required=False,
         min_length=MIN_LENGTH_USERNAME,
         max_length=MAX_LENGTH_USERNAME,
@@ -268,22 +267,39 @@ class ProfileMeWriteSerializer(ProfileMeReadSerializer):
         ),
     )
 
-    class Meta(ProfileMeReadSerializer.Meta):
-        read_only_fields = ProfileMeReadSerializer.Meta.read_only_fields + ("user_id", "specialists")
+    class Meta:
+        model = Profile
+        fields = (
+            "user_id",
+            "avatar",
+            "username",
+            "name",
+            "about",
+            "portfolio_link",
+            "phone_number",
+            "telegram_nick",
+            "email",
+            "birthday",
+            "country",
+            "city",
+            "visible_status",
+            "visible_status_contacts",
+            "allow_notifications",
+            "subscribe_to_projects",
+            "specialists",
+        )
+        read_only_fields = ("user_id", "specialists")
 
     def validate_about(self, value):
-        """
-        Метод валидации и защиты от потенциально вредоносных
-        HTML-тегов и атрибутов.
-        """
-        if value is None:
-            return ""
-        safe_about = cleaner.clean(
-            value,
-        )  # защита потенциально вредоносных HTML-тегов и атрибутов
-        return safe_about
+        return "" if value is None else cleaner.clean(value)
 
     def update(self, instance, validated_data):
+        # Обновление связанных моделей
+        user_data = validated_data.pop("user", {})
+        for attr, value in user_data.items():
+            setattr(instance.user, attr, value)
+        instance.user.save()
+
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         instance.save()
