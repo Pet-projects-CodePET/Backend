@@ -255,7 +255,7 @@ class ProfileMeWriteSerializer(serializers.ModelSerializer):
 
     avatar = Base64ImageField(required=False, allow_null=True)
     username = serializers.CharField(
-        source="user.username",
+        source="user__username",
         required=False,
         min_length=MIN_LENGTH_USERNAME,
         max_length=MAX_LENGTH_USERNAME,
