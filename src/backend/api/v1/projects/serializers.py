@@ -294,6 +294,15 @@ class WriteDraftSerializer(
         extra_kwargs = {
             "directions": {"required": False},
             "project_status": {"required": False},
+            "description": {"required": False},
+            "started": {"required": False},
+            "ended": {"required": False},
+            "busyness": {"required": False},
+            "link": {"required": False},
+            "phone_number": {"required": False},
+            "telegram_nick": {"required": False},
+            "email": {"required": False},
+            "project_specialists": {"required": False},
         }
 
 
