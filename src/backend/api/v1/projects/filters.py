@@ -1,7 +1,7 @@
 from django.contrib.postgres.search import SearchQuery, SearchVector
 from django.db.models import Q
 from django_filters.rest_framework import FilterSet, filters
-from langdetect import detect, LangDetectException
+from langdetect import LangDetectException, detect
 
 from apps.general.constants import LEVEL_CHOICES
 from apps.general.models import Profession, Skill

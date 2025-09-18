@@ -250,6 +250,7 @@ class ProfileMeReadSerializer(BaseProfileSerializer):
         rep["about"] = html.unescape(rep["about"]) if rep["about"] else ""
         return rep
 
+
 class ProfileMeWriteSerializer(serializers.ModelSerializer):
     """Сериализатор для обновления профиля его владельцем."""
 
