@@ -94,6 +94,7 @@ class Project(CreatedModifiedFields, ContactsFields):
         verbose_name="Описание",
         max_length=MAX_LENGTH_DESCRIPTION,
         null=True,
+        blank=True,
         validators=(
             MinLengthValidator(
                 limit_value=MIN_LENGTH_DESCRIPTION,
@@ -121,10 +122,12 @@ class Project(CreatedModifiedFields, ContactsFields):
     started = models.DateField(
         verbose_name="Дата начала",
         null=True,
+        blank=True,
     )
     ended = models.DateField(
         verbose_name="Дата завершения",
         null=True,
+        blank=True,
     )
     busyness = models.PositiveSmallIntegerField(
         verbose_name="Занятость (час/нед)",
@@ -139,6 +142,8 @@ class Project(CreatedModifiedFields, ContactsFields):
         Direction,
         verbose_name="Направления разработки",
         related_name="projects_direction",
+        null=True,
+        blank=True,
     )
     link = CustomURLField(
         verbose_name="Ссылка",
