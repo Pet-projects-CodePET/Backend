@@ -289,14 +289,14 @@ class WriteDraftSerializer(
     project_specialists = BaseProjectSpecialistSerializer(
         many=True, required=False
     )
+    started = serializers.DateField(required=False, allow_null=True)
+    ended = serializers.DateField(required=False, allow_null=True)
 
     class Meta(BaseProjectSerializer.Meta):
         extra_kwargs = {
             "directions": {"required": False},
             "project_status": {"required": False},
             "description": {"required": False},
-            "started": {"required": False},
-            "ended": {"required": False},
             "busyness": {"required": False},
             "link": {"required": False},
             "phone_number": {"required": False},
