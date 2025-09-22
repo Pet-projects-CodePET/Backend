@@ -62,8 +62,10 @@ class ProjectOrDraftValidateMixin:
             )
         return False
 
-    def validate_started(self, value) -> date:
+    def validate_started(self, value) -> date | None:
         """Метод валидации даты начала проекта."""
+        if value is None:
+            return None
 
         if value < date.today():
             raise serializers.ValidationError(
@@ -116,11 +118,12 @@ class ProjectOrDraftValidateMixin:
         )  # mypy по другому не пропускал
         started = attrs.get("started", instance.started if instance else None)
         ended = attrs.get("ended", instance.ended if instance else None)
-        if started + datetime.timedelta(days=2) > ended:
-            errors.setdefault("invalid_dates", []).append(
-                "Дата завершения проекта не может быть "
-                "раньше чем через 2 дня после начала."
-            )
+        if started and ended:
+            if started + datetime.timedelta(days=2) > ended:
+                errors.setdefault("invalid_dates", []).append(
+                    "Дата завершения проекта не может быть "
+                    "раньше чем через 2 дня после начала."
+                )
 
         if errors:
             raise serializers.ValidationError(errors)

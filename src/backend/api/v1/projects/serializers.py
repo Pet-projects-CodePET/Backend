@@ -18,6 +18,7 @@ from api.v1.projects.constants import (
     ALLOWED_ATTRIBUTES_BY_FRONT,
     ALLOWED_TAGS_BY_FRONT,
 )
+from api.v1.projects.fields import NullableDateField
 from api.v1.projects.mixins import (
     ProjectOrDraftCreateUpdateMixin,
     ProjectOrDraftValidateMixin,
@@ -289,8 +290,8 @@ class WriteDraftSerializer(
     project_specialists = BaseProjectSpecialistSerializer(
         many=True, required=False
     )
-    started = serializers.DateField(required=False, allow_null=True)
-    ended = serializers.DateField(required=False, allow_null=True)
+    started = NullableDateField(required=False, allow_null=True)
+    ended = NullableDateField(required=False, allow_null=True)
 
     class Meta(BaseProjectSerializer.Meta):
         extra_kwargs = {
