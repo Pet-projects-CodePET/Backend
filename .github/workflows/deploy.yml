@@ -20,7 +20,7 @@ jobs:
     - name: Checkout repo
       uses: actions/checkout@v4
     - name: Create project directory and .env-file
-      uses: appleboy/ssh-action@master
+      uses: appleboy/ssh-action@v1.2.4
       with:
         host: ${{ secrets[format('HOST_{0}', inputs.environment)] }}
         username: ${{ secrets.USER }}
@@ -79,7 +79,7 @@ jobs:
           _EOF_
           fi
     - name: Copy docker-compose-dev.yaml via ssh
-      uses: appleboy/scp-action@master
+      uses: appleboy/scp-action@v0.1.7
       with:
         host: ${{ secrets[format('HOST_{0}', inputs.environment)] }}
         username: ${{ secrets.USER }}
@@ -88,7 +88,7 @@ jobs:
         source: "infra/docker-compose-dev.yaml"
         target: "codepet"
     - name: Executing remote ssh commands to deploy
-      uses: appleboy/ssh-action@master
+      uses: appleboy/ssh-action@v1.2.4
       with:
         host: ${{ secrets[format('HOST_{0}', inputs.environment)] }}
         username: ${{ secrets.USER }}
