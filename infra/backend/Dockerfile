@@ -5,7 +5,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 
 RUN apk update && \
     python -m pip install --upgrade pip --no-cache-dir && \
-    pip install poetry
+    pip install poetry==1.8.3
 
 COPY ./pyproject.toml ./poetry.lock ./
 

@@ -230,7 +230,7 @@ LOGGING: Dict = {
         "file": {
             "level": "INFO",
             "class": "logging.handlers.TimedRotatingFileHandler",
-            "filename": "./data/logs/main.log",
+            "filename": BASE_DIR / "data" / "logs" / "main.log",
             "formatter": "main_format",
         },
         "console": {
